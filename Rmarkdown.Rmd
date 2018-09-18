@@ -1,0 +1,38 @@
+---
+title: "(R)Markdown "
+author: "<a href='./index.html'>Statistics 506, Fall 2018</a>" 
+date: 
+output: 
+  html_document:
+    theme: journal
+    highlight: pygments
+    css: ../styles.css
+---
+
+## Markdown
+
+[Markdown](https://en.wikipedia.org/wiki/Markdown) is a plain text formatting language that is designed to create html 
+documents using special characters and indentation to specify the desired format
+while remaining easy to read in its raw format. Thanks to the magic of
+[Pandoc](https://pandoc.org/) Markdown can also be used to create PDF, MS Word,
+and other styles of documents. 
+
+There are many "flavors" of markdown.  Let's look at a quick tutorial on 
+<a href="https://guides.github.com/features/mastering-markdown/">Github flavored markdown</a>.
+
+## Rmarkdown
+This document was written in [Rmarkdown](http://rmarkdown.rstudio.com/)
+using RStudio. You can see the source at [Stats506_F18](https://github.com/jbhender/Stats506_F18/Examples/Rmarkdown.Rmd).
+
+You will use Rmarkdown for all assignments in the course.  To begin, you should
+familarize yourself with the basic formatting options specified under "Examples"
+at the page we viewed [earlier](<a href="https://guides.github.com/features/mastering-markdown/">). A homework
+template is available on [Stats506_F18](https://github.com/jbhender/Stats506_F18/templates/template.Rmd)
+
+## ![](../icons/Reading.png){width='25px'} Reading
+
+Please read: *R for Data Science*, [Chapter 24](http://r4ds.had.co.nz/r-markdown.html)
+
+You may also find Michael Clark's ["Rmarkdown"](https://m-clark.github.io/Introduction-to-Rmarkdown/) document
+useful. 
+
