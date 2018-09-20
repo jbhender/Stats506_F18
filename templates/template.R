@@ -1,6 +1,6 @@
 ## R Script Template
 ##
-## Repalce the first line wich a concise title for your script,
+## Repalce the first line with a concise title for your script.
 ## Then describe your R script here in a few lines here. This 
 ## is a good place to document data sources.  
 ##
@@ -8,7 +8,7 @@
 ## in your template.
 ##
 ## Author: Your name, your email @umich.edu
-## Updated: September 10, 2018 - Last modified date
+## Updated: September 20, 2018 - Last modified date
 
 #! Limit lines to 80 characters with rare exceptions. 
 # 80: --------------------------------------------------------------------------
