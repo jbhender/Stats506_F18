@@ -13,4 +13,7 @@ The following templates are available:
 The source code for the Rmarkdown notes can be found at:
   - [./Examples/Rmarkdown.Rmd](./Examples/Rmarkdown.Rmd)
 
+### Case Studies
 
+The RECS 2009 case study looking at the proportions of home types is availble as 
+[./case_studies/case_study_1_RECS.R](./case_studies/case_study_1_RECS.R).
