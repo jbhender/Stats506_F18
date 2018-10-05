@@ -13,6 +13,9 @@ The following templates are available:
 The source code for the Rmarkdown notes can be found at:
   - [./Examples/Rmarkdown.Rmd](./Examples/Rmarkdown.Rmd)
 
+Stata examples presented in class can be found at:
+  - [./Examples/Sata](./Examples/Stata)
+
 ### Case Studies
 
 The RECS 2009 case study looking at the proportions of home types is availble as 
