@@ -14,7 +14,7 @@ The source code for the Rmarkdown notes can be found at:
   - [./Examples/Rmarkdown.Rmd](./Examples/Rmarkdown.Rmd)
 
 Stata examples presented in class can be found at:
-  - [./Examples/Sata](./Examples/Stata)
+  - [./Examples/Stata](./Examples/Stata)
 
 ### Case Studies
 
