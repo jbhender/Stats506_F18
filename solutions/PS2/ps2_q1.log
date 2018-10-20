@@ -1,0 +1,158 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /afs/umich.edu/user/j/b/jbhender/ps506/F18/PS2/ps2_q1.log
+  log type:  text
+ opened on:  19 Oct 2018, 08:18:59
+
+. 
+. 
+. // data prep
+. import delimited recs2015_public_v3.csv
+(739 vars, 5,686 obs)
+
+. 
+. preserve
+
+. 
+. // We will use these variable names repeatedly.
+. local vars = "kwh cufeetng gallonlp gallonfo"
+
+. 
+. // keep primary energy use variables
+. keep doeid nweight `vars'
+
+. save recs2015_fuels.dta, replace
+file recs2015_fuels.dta saved
+
+. 
+. // generate contributions to estimate for national total
+. 
+. foreach var in `vars' {
+  2.   generate t`var'=`var'*nweight
+  3. }
+
+. 
+. // compute point estimates for national totals
+. keep doeid t*
+
+. collapse (sum) t*
+
+. 
+. // add a fake variable to merge on later and save
+. generate fid=0
+
+. save recs2015_fuels_petotal.dta, replace
+file recs2015_fuels_petotal.dta saved
+
+. 
+. // keep replicate weights and reshape to long
+. restore
+
+. keep doeid brrwt1-brrwt96
+
+. 
+. reshape long brrwt, i(doeid) j(repl)
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+>  27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 5
+> 2 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 
+> 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     5686   ->  545856
+Number of variables                  97   ->       3
+j variable (96 values)                    ->   repl
+xij variables:
+              brrwt1 brrwt2 ... brrwt96   ->   brrwt
+-----------------------------------------------------------------------------
+
+. // save recs2015_brrwt_long.dta // if needed again later
+. 
+. // merge together
+. merge m:1 doeid using recs2015_fuels.dta
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                           545,856  (_merge==3)
+    -----------------------------------------
+
+. 
+. // compute replicate estimates 
+. foreach var in `vars' {
+  2.   generate t`var'_r=`var'*brrwt
+  3. }
+
+. 
+. collapse (sum) t*_r, by(repl)
+
+. 
+. // merge against point estimates using fid
+. 
+. generate fid=0
+
+. merge m:1 fid using recs2015_fuels_petotal.dta
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                                96  (_merge==3)
+    -----------------------------------------
+
+. 
+. // compute residuals
+. foreach var in `vars' {
+  2.   generate rsq_`var'= (t`var'-t`var'_r)^2
+  3. }
+
+. 
+. // collapse to point estimates and standard errors
+. drop *_r
+
+. collapse (first) t* (mean) rsq_*
+
+. 
+. // Fay coefficient
+. foreach var in `vars' {
+  2.   replace rsq_`var' = 2*sqrt(rsq_`var')
+  3. }
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+
+. 
+. // reshape and output as csv
+. generate fid=0
+
+. reshape long t rsq_, i(fid) j(fuel) string
+(note: j = cufeetng gallonfo gallonlp kwh)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                        1   ->       4
+Number of variables                   9   ->       4
+j variable (4 values)                     ->   fuel
+xij variables:
+           tcufeetng tgallonfo ... tkwh   ->   t
+  rsq_cufeetng rsq_gallonfo ... rsq_kwh   ->   rsq_
+-----------------------------------------------------------------------------
+
+. 
+. rename t total
+
+. rename rsq_ std_error
+
+. drop fid
+
+. 
+. export delimited recs2015_usage.csv, replace
+file recs2015_usage.csv saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /afs/umich.edu/user/j/b/jbhender/ps506/F18/PS2/ps2_q1.log
+  log type:  text
+ closed on:  19 Oct 2018, 08:19:21
+-------------------------------------------------------------------------------

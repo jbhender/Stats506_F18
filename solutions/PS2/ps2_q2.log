@@ -1,0 +1,760 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /afs/umich.edu/user/j/b/jbhender/ps506/F18/PS2/ps2_q2.log
+  log type:  text
+ opened on:  19 Oct 2018, 11:38:04
+
+. 
+. * (a) Import and merge: -----------------------------------------------------
+> ---
+. 
+. // Import and save OHX_D data
+. fdause OHX_D.XPT, clear
+
+. quietly compress
+
+. gsort +seqn
+
+. save OHX_D.dta, replace
+file OHX_D.dta saved
+
+. 
+. //Import DEMO_D and merge OHX_D
+. fdause DEMO_D.XPT, clear
+
+. quietly compress
+
+. gsort +seqn
+
+. merge 1:1 seqn using OHX_D.dta
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,043
+        from master                     2,043  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                             8,305  (_merge==3)
+    -----------------------------------------
+
+. 
+. // Reduce to matched data
+. keep if _merge==3
+(2,043 observations deleted)
+
+. save OHX_DEMO_merge.dta, replace
+file OHX_DEMO_merge.dta saved
+
+. 
+. // Reduce to the variables of interest
+. keep seqn riagendr ridagemn ridreth1 indfmpir ohx04htc sdmvpsu sdmvstra wtmec
+> 2yr
+
+. 
+. // Clean up variable names and value labels
+. rename ohx04htc tooth4
+
+. rename indfmpir pir
+
+. rename riagendr gender
+
+. rename ridagemn age
+
+. rename ridreth1 race
+
+. 
+. // Generate indicators for race/ethnicity
+. // with (3) non-hispanic white as ref
+. generate mexamer = 0
+
+. replace mexamer = 1 if race == 1
+(2,123 real changes made)
+
+. generate black = 0
+
+. replace black = 1 if race == 4
+(2,238 real changes made)
+
+. generate other = 0
+
+. replace other = 1 if race == 5 | race == 2
+(638 real changes made)
+
+. 
+. // Label gender
+. label define labgender 1 male 2 female, replace
+
+. label values gender labgender
+
+. 
+. // Drop missing values
+. drop if tooth4 == 9
+(5 observations deleted)
+
+. drop if tooth4 == .
+(618 observations deleted)
+
+. drop if age == .
+(119 observations deleted)
+
+. 
+. // Collapse the outcome variable
+. generate y = 1
+
+. replace y = 0 if tooth4==1
+(962 real changes made)
+
+. compress
+  variable mexamer was float now byte
+  variable black was float now byte
+  variable other was float now byte
+  variable y was float now byte
+  (90,756 bytes saved)
+
+. 
+. * (b) logistic reression: ---------------------------------------------------
+> ---
+. logit y age
+
+Iteration 0:   log likelihood = -2881.6973  
+Iteration 1:   log likelihood = -2107.4429  
+Iteration 2:   log likelihood = -962.00048  
+Iteration 3:   log likelihood = -765.23661  
+Iteration 4:   log likelihood = -757.79738  
+Iteration 5:   log likelihood = -757.77236  
+Iteration 6:   log likelihood = -757.77236  
+
+Logistic regression                             Number of obs     =      7,563
+                                                LR chi2(1)        =    4247.85
+                                                Prob > chi2       =     0.0000
+Log likelihood = -757.77236                     Pseudo R2         =     0.7370
+
+------------------------------------------------------------------------------
+           y |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         age |   .0696778   .0025658    27.16   0.000     .0646489    .0747067
+       _cons |  -8.359362    .323495   -25.84   0.000    -8.993401   -7.725324
+------------------------------------------------------------------------------
+Note: 0 failures and 3168 successes completely determined.
+
+. 
+. // compute number of months
+. matrix b = e(b)
+
+. mata:
+------------------------------------------------- mata (type end to exit) -----
+:  b = st_matrix("b")
+
+:  p = (.25/.75, 1, .75/.25)
+
+:  o = ln(p)
+
+:  a = o - b*(0,0,0\1,1,1)
+
+:  a = a/b[1] 
+
+: // a = round(a) 
+:  st_matrix("a", a)
+
+: end
+-------------------------------------------------------------------------------
+
+. matrix list a
+
+a[1,3]
+           c1         c2         c3
+r1  104.20462  119.97166  135.73869
+
+. 
+. // Use multiples of 12 that just span this range
+. // 96, 108, 120, 132, 144
+. 
+. * (c) multivariable logistic regression: ------------------------------------
+> ---
+. 
+. putexcel set ps2_q2_c.xls, replace
+Note: file will be replaced when the first putexcel command is issued
+
+. 
+. // model 1: BIC = 1533.4
+. quietly logit y age
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -757.7724       2    1519.545   1533.407
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. 
+. putexcel A2="age"
+file ps2_q2_c.xls saved
+
+. putexcel B2=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // model 2: BIC = 1542.1, drop
+. quietly logit y age gender
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -757.6309       3    1521.262   1542.055
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A3="age  gender"
+file ps2_q2_c.xls saved
+
+. putexcel B3=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // model 3a: BIC = 1529.3, keep
+. quietly logit y age i.black
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -751.2437       3    1508.487   1529.281
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A4="age i.black"
+file ps2_q2_c.xls saved
+
+. putexcel B4=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // model 3b: BIC = 1533.1, drop
+. quietly logit y age i.black i.mexamer
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -748.6897       4    1505.379   1533.103
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A5="age i.black i.mexamer"
+file ps2_q2_c.xls saved
+
+. putexcel B5=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // model 3c: BIC = 1536.2, drop 
+. quietly logit y age i.black i.other
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -750.1896       4    1508.379   1536.103
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A6="age i.black i.other"
+file ps2_q2_c.xls saved
+
+. putexcel B6=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // model 4: BIC = 1460.9 vs 1462.9 drop
+. 
+.  *  Note: pir has additional missing values, we should compare BIC between
+.  *        the base model and pir using the same set of cases to be rigorous.
+.  *        We preserve the existing data set, then drop these cases. 
+. 
+. preserve
+
+. drop if pir == .
+(317 observations deleted)
+
+. 
+. quietly logit y age i.black
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,246 -2767.303  -717.1343       3    1440.269   1460.933
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A7="age i.black (reduced)"
+file ps2_q2_c.xls saved
+
+. putexcel B7=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. quietly logit y age i.black pir
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,246 -2767.303  -713.6708       4    1435.342   1462.895
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A8="age i.black pir"
+file ps2_q2_c.xls saved
+
+. putexcel B8=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. restore
+
+. 
+. // model 5: BIC = 1538.1, drop
+. quietly logit y c.age##i.black // note the use of c.age!
+
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563 -2881.697  -751.2093       4    1510.419   1538.143
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. putexcel A9="c.age##i.black"
+file ps2_q2_c.xls saved
+
+. putexcel B9=matrix(r(S))
+file ps2_q2_c.xls saved
+
+. 
+. // refit model we wish to use
+. quietly logit y age i.black 
+
+. 
+. // Output results to Excel
+. // outreg2 using ps2_q2_c.txt, replace
+. 
+. matrix b = e(b)
+
+. matrix V = e(V)
+
+. mata:
+------------------------------------------------- mata (type end to exit) -----
+:  b = st_matrix("b")
+
+:  v = st_matrix("V")
+
+:  se = sqrt( diagonal(v) )
+
+:  se = se'
+
+:  st_matrix("se", se) 
+
+: end
+-------------------------------------------------------------------------------
+
+. 
+. putexcel set ps2_q2_c_coef.xls, replace
+Note: file will be replaced when the first putexcel command is issued
+
+. putexcel A2="term" A3="est" A4="se"
+file ps2_q2_c_coef.xls saved
+
+. putexcel B1=matrix(b), colnames
+file ps2_q2_c_coef.xls saved
+
+. putexcel B4=matrix(se)
+file ps2_q2_c_coef.xls saved
+
+. 
+. * (d) margins: --------------------------------------------------------------
+> ---
+. // Because we have no additional variables, parts 2 and 3 are redundant.
+. 
+. 
+. putexcel set ps2_q2_d.xls, replace
+Note: file will be replaced when the first putexcel command is issued
+
+. 
+. // adjusted predictions at mean for "black"
+. margins, at(age=(96 108 120 132 144)) atmeans post
+
+Adjusted predictions                            Number of obs     =      7,563
+Model VCE    : OIM
+
+Expression   : Pr(y), predict()
+
+1._at        : age             =          96
+               0.black         =     .731588 (mean)
+               1.black         =     .268412 (mean)
+
+2._at        : age             =         108
+               0.black         =     .731588 (mean)
+               1.black         =     .268412 (mean)
+
+3._at        : age             =         120
+               0.black         =     .731588 (mean)
+               1.black         =     .268412 (mean)
+
+4._at        : age             =         132
+               0.black         =     .731588 (mean)
+               1.black         =     .268412 (mean)
+
+5._at        : age             =         144
+               0.black         =     .731588 (mean)
+               1.black         =     .268412 (mean)
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1544312   .0127441    12.12   0.000     .1294531    .1794092
+          2  |   .2974725   .0162447    18.31   0.000     .2656335    .3293116
+          3  |   .4953841   .0167606    29.56   0.000      .462534    .5282343
+          4  |   .6947528   .0148209    46.88   0.000     .6657044    .7238013
+          5  |   .8406849   .0113712    73.93   0.000     .8183977    .8629721
+------------------------------------------------------------------------------
+
+. //outreg2 using ps2_q2_d_adjpred.txt
+. 
+. putexcel set ps2_q2_d.xls, sheet(adj_pred_est) replace
+Note: file will be replaced when the first putexcel command is issued
+
+. putexcel A2=matrix(e(b))
+file ps2_q2_d.xls saved
+
+. 
+. putexcel set ps2_q2_d.xls, sheet(adj_pred_v) modify
+
+. putexcel A2=matrix(e(V))
+file ps2_q2_d.xls saved
+
+. 
+. // Marginal effects for black at representative ages
+. quietly logit y age i.black
+
+. margins, dydx(black) at(age=(96 108 120 132 144)) post
+
+Conditional marginal effects                    Number of obs     =      7,563
+Model VCE    : OIM
+
+Expression   : Pr(y), predict()
+dy/dx w.r.t. : 1.black
+
+1._at        : age             =          96
+
+2._at        : age             =         108
+
+3._at        : age             =         120
+
+4._at        : age             =         132
+
+5._at        : age             =         144
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.black      |
+         _at |
+          1  |   .0738865   .0221918     3.33   0.001     .0303915    .1173815
+          2  |   .1135167   .0325573     3.49   0.000     .0497056    .1773278
+          3  |   .1291199   .0354418     3.64   0.000     .0596552    .1985846
+          4  |   .1047944   .0278516     3.76   0.000     .0502062    .1593826
+          5  |   .0643068    .016909     3.80   0.000     .0311657    .0974479
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. 
+. //margins black, at(age=(96 108 120 132 144)) post
+. //outreg2 using ps2_q2_d_margins.txt, replace 
+. 
+. putexcel set ps2_q2_d.xls, sheet(me_black_est) modify
+
+. putexcel A2=matrix(e(b))
+file ps2_q2_d.xls saved
+
+. 
+. putexcel set ps2_q2_d.xls, sheet(me_black_v) modify
+
+. putexcel A2=matrix(e(V))
+file ps2_q2_d.xls saved
+
+. 
+. // Below are the "predictive margins" for black
+. // at representative ages. 
+. 
+. //quietly logit y age i.black
+. //margins black, at(age=(96 108 120 132 144)) post
+. //outreg2 using ps2_q2_d_margins.txt, replace
+. 
+. // The average marginal effect, in this case just the
+. // difference between the margins above. 
+. 
+. quietly logit y age i.black
+
+. margins, dydx(black) at(age=(96 108 120 132 144)) post
+
+Conditional marginal effects                    Number of obs     =      7,563
+Model VCE    : OIM
+
+Expression   : Pr(y), predict()
+dy/dx w.r.t. : 1.black
+
+1._at        : age             =          96
+
+2._at        : age             =         108
+
+3._at        : age             =         120
+
+4._at        : age             =         132
+
+5._at        : age             =         144
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.black      |
+         _at |
+          1  |   .0738865   .0221918     3.33   0.001     .0303915    .1173815
+          2  |   .1135167   .0325573     3.49   0.000     .0497056    .1773278
+          3  |   .1291199   .0354418     3.64   0.000     .0596552    .1985846
+          4  |   .1047944   .0278516     3.76   0.000     .0502062    .1593826
+          5  |   .0643068    .016909     3.80   0.000     .0311657    .0974479
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. //outreg2 using ps2_q2_d_me.txt, replace 
+. 
+. putexcel set ps2_q2_d.xls, sheet(me_black_est) modify
+
+. putexcel A2=matrix(e(b))
+file ps2_q2_d.xls saved
+
+. 
+. putexcel set ps2_q2_d.xls, sheet(me_black_v) modify
+
+. putexcel A2=matrix(e(V))
+file ps2_q2_d.xls saved
+
+. 
+. * (e) survey weighted: ------------------------------------------------------
+> ---
+. svyset sdmvpsu [pweight=wtmec2yr], strata(sdmvstra) vce(linearized)
+
+      pweight: wtmec2yr
+          VCE: linearized
+  Single unit: missing
+     Strata 1: sdmvstra
+         SU 1: sdmvpsu
+        FPC 1: <zero>
+
+. 
+. svy: logit y age i.black
+(running logit on estimation sample)
+
+Survey: Logistic regression
+
+Number of strata   =        15                Number of obs     =        7,563
+Number of PSUs     =        30                Population size   =  247,879,753
+                                              Design df         =           15
+                                              F(   2,     14)   =        41.06
+                                              Prob > F          =       0.0000
+
+------------------------------------------------------------------------------
+             |             Linearized
+           y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         age |   .0611838   .0065934     9.28   0.000     .0471303    .0752374
+     1.black |   .6119114   .1318629     4.64   0.000     .3308524    .8929705
+       _cons |   -7.64849   .8535213    -8.96   0.000    -9.467728   -5.829253
+------------------------------------------------------------------------------
+Note: 0 failures and 2917 successes completely determined.
+
+. 
+. // Output resuts to excel
+. // outreg2 using ps2_q2_e.txt, replace
+. 
+. matrix b = e(b)
+
+. matrix V = e(V)
+
+. mata:
+------------------------------------------------- mata (type end to exit) -----
+:  b = st_matrix("b")
+
+:  v = st_matrix("V")
+
+:  se = sqrt( diagonal(v) )
+
+:  se = se'
+
+:  st_matrix("se", se)
+
+: end
+-------------------------------------------------------------------------------
+
+. 
+. putexcel set ps2_q2_e_coef.xls, replace
+Note: file will be replaced when the first putexcel command is issued
+
+. putexcel A2="term" A3="est" A4="se"
+file ps2_q2_e_coef.xls saved
+
+. putexcel B1=matrix(b), colnames
+file ps2_q2_e_coef.xls saved
+
+. putexcel B4=matrix(se)
+file ps2_q2_e_coef.xls saved
+
+. 
+. 
+. // You didn't need to refit margins but I've done so here.
+. margins, dydx(black) at(age=(96 108 120 132 144)) 
+
+Conditional marginal effects                    Number of obs     =      7,563
+Model VCE    : Linearized
+
+Expression   : Pr(y), predict()
+dy/dx w.r.t. : 1.black
+
+1._at        : age             =          96
+
+2._at        : age             =         108
+
+3._at        : age             =         120
+
+4._at        : age             =         132
+
+5._at        : age             =         144
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.black      |
+         _at |
+          1  |    .093194   .0207071     4.50   0.000      .049058    .1373301
+          2  |   .1334037   .0280245     4.76   0.000     .0736709    .1931365
+          3  |   .1517956   .0322061     4.71   0.000     .0831498    .2204413
+          4  |   .1334471   .0276751     4.82   0.000     .0744591    .1924352
+          5  |   .0932484   .0191429     4.87   0.000     .0524463    .1340505
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. margins black, at(age=(96 108 120 132 144)) post 
+
+Adjusted predictions                            Number of obs     =      7,563
+Model VCE    : Linearized
+
+Expression   : Pr(y), predict()
+
+1._at        : age             =          96
+
+2._at        : age             =         108
+
+3._at        : age             =         120
+
+4._at        : age             =         132
+
+5._at        : age             =         144
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   _at#black |
+        1 0  |   .1449413   .0301629     4.81   0.000     .0806506    .2092321
+        1 1  |   .2381354   .0380948     6.25   0.000     .1569383    .3193325
+        2 0  |   .2610275   .0344608     7.57   0.000     .1875761    .3344789
+        2 1  |   .3944312   .0372655    10.58   0.000     .3150017    .4738608
+        3 0  |   .4239867    .031955    13.27   0.000     .3558761    .4920973
+        3 1  |   .5757823   .0319541    18.02   0.000     .5076738    .6438908
+        4 0  |   .6053428   .0291067    20.80   0.000     .5433033    .6673824
+        4 1  |     .73879   .0288873    25.57   0.000     .6772181    .8003618
+        5 0  |    .761693   .0287506    26.49   0.000     .7004126    .8229733
+        5 1  |   .8549414   .0248717    34.37   0.000     .8019286    .9079542
+------------------------------------------------------------------------------
+
+. //outreg2 using ps2_q2_e_adjpred.txt, replace   
+. 
+. 
+. // If including "post" above we have to refit the model
+. quietly logit y age i.black 
+
+. 
+. margins, dydx(black) at(age=(96 108 120 132 144)) post
+
+Conditional marginal effects                    Number of obs     =      7,563
+Model VCE    : OIM
+
+Expression   : Pr(y), predict()
+dy/dx w.r.t. : 1.black
+
+1._at        : age             =          96
+
+2._at        : age             =         108
+
+3._at        : age             =         120
+
+4._at        : age             =         132
+
+5._at        : age             =         144
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.black      |
+         _at |
+          1  |   .0738865   .0221918     3.33   0.001     .0303915    .1173815
+          2  |   .1135167   .0325573     3.49   0.000     .0497056    .1773278
+          3  |   .1291199   .0354418     3.64   0.000     .0596552    .1985846
+          4  |   .1047944   .0278516     3.76   0.000     .0502062    .1593826
+          5  |   .0643068    .016909     3.80   0.000     .0311657    .0974479
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. outreg2 using ps2_q2_e_me.txt, replace 
+dir : seeout
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /afs/umich.edu/user/j/b/jbhender/ps506/F18/PS2/ps2_q2.log
+  log type:  text
+ closed on:  19 Oct 2018, 11:38:08
+-------------------------------------------------------------------------------
