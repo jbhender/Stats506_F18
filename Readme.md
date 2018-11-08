@@ -16,10 +16,19 @@ The source code for the Rmarkdown notes can be found at:
 Stata examples presented in class can be found at:
   - [Examples/Stata](./Examples/Stata)
 
+The script [bootstrap_iqr_example.R](Examples/bootstrap_iqr_example.R) has code
+for the first example from the notes on resampling techniques. 
+
+
 ### Case Studies
 
 The RECS 2009 case study looking at the proportions of home types is availble as 
 [case_studies/case_study_1_RECS.R](./case_studies/case_study_1_RECS.R).
+
+The Chick Weights case study using the bootstrap to estimate uncertainty in the 
+median weight is available at 
+[case_studies/chick_weight_data.table.R](case_studies/chick_weight_data.table.R).
+
 
 ### Solutions to problem sets
 
