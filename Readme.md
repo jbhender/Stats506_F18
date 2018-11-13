@@ -16,8 +16,21 @@ The source code for the Rmarkdown notes can be found at:
 Stata examples presented in class can be found at:
   - [Examples/Stata](./Examples/Stata)
 
-The script [bootstrap_iqr_example.R](Examples/bootstrap_iqr_example.R) has code
+The script [bootstrap_iqr_example.R](Examples/R/bootstrap_iqr_example.R) has code
 for the first example from the notes on resampling techniques. 
+
+A cross-validation example in the context of ridge regression is available as 
+[xvalidate_ridge.R](Examples/R/xvalidate_ridge.R).
+
+A data.table example comparing situations ruturning the same or a different
+number of rows when using a `by` statement is available as
+[data.table_number_of_rows.R](Examples/R/data.table_number_of_rows.R).
+
+Examples from our discussion of parallel computing can be found in 
+[Examples/R/parallel](Examples/R/parallel/).
+
+Exmaples from our discussion of batch computing and job scheduling are in
+[Examples/R/r_batch](Examples/R/r_batch).
 
 
 ### Case Studies
