@@ -17,12 +17,12 @@ library(doRNG)
 
 ##### !! This code is all taken from example 1 !! #####
 ## load data ##
-foo = load('./YaleTNBC.RData')
+foo = load('./data/YaleTNBC.RData')
 AA = grep('AA', colnames(YaleTNBC))
 EA = grep('EA', colnames(YaleTNBC))
 
 # load gene sets #
-bar = load('./c6.unsigned.RData')
+bar = load('./data/c6.unsigned.RData')
 
 # get row index for genes in each set  #
 getInd = function(set,universe){
@@ -92,7 +92,7 @@ cat('Starting run 1 ...\n')
 set.seed(89)
 tm1 = system.time({
   scores_perm_1 = foreach(n=1:nPermute) %dorng% {
-    doPermute_seq(c6.ind,YaleTNBC,length(AA))
+    doPermute_seq(c6.ind, YaleTNBC, length(AA))
   }
 })
 
@@ -107,7 +107,7 @@ cat('\tdim(scores_perm_1):', dim(scores_perm_1),'\n')
 cat('Starting run 2 ...\n')
 set.seed(89)
 tm2 = system.time({
-  scores_perm_2 = foreach(n=1:nPermute, .combine='cbind') %dorng% {
+  scores_perm_2 = foreach(n=1:nPermute) %dorng% {
     doPermute_seq(c6.ind, YaleTNBC, length(AA))
   }
 })
@@ -123,11 +123,10 @@ cat('Shut down cluster.\n\n')
 stopCluster(cl)
 
 ## Convert scores_perm_1 to a matrix ##
-sp1 = do.call('cbind', scores_perm_1)
 
 cat('Do the results match for runs 1 and 2?\n')
-print(all.equal(sp1,scores_perm_2))
-cat('# of numeric disagreements =', sum(sp1 != scores_perm_2), '\n')
+print(all.equal(scores_perm_1, scores_perm_2))
+cat('# of numeric disagreements =', sum( unlist(scores_perm_1) != unlist(scores_perm_2)), '\n')
 
 ## set up a new cluster ##
 cat('Create new cluster.\n\n')
@@ -151,6 +150,7 @@ scores_perm_4 =
   foreach(n=1:nPermute, .combine='cbind', .packages='parallel') %dorng% {
     doPermute_par(c6.ind,YaleTNBC,length(AA),mc.cores=2)
   }
+
 
 cat('Check if runs 3 and 4 return the same results.\n')
 cat(all.equal(scores_perm_3, scores_perm_4), '\n')
