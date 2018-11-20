@@ -46,6 +46,10 @@ median weight is available at
 ### Solutions to problem sets
 
 Source code for problem set solutions is available under [solutions](./solutions).
+
 Output from source files is available at the course [homepage](https://jbhender.github.io/Stats506/F18).
 
+Source code from the Linux Shell Skills quiz is available at [./Examples/midterm/bucket_phys.sh].
+
+The S4 and S3 code with solutions from the S3 & S4 methods quiz are available at [./solutions/S3_S4_Quiz/].
 
