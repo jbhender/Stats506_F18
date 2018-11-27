@@ -1,0 +1,256 @@
+---
+title: "Problem Set 3, Solutions"
+author: "Stats 506, Fall 2018"
+date: "Due: Monday November 19, 5pm"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse); library(data.table)
+```
+
+R scripts and source code for this document can be found at
+the [Stats506_F18 repo](https://github.com/jbhender/Stats506_F18/blob/master/solutions/PS3).
+
+## Question 1 [60 points]
+
+First, repeat question 3 parts a-c from problem set 1 using `data.table` for all computations and data manipulations.  
+
+Then, formulate and state a question answerable using the RECS data. 
+Your question should be similar in scope to (one of) parts a-c above and should
+rely on one or more variables not previously used.  Answer your question 
+(using data.table) and provide supporting evidence in the form of nicely formatted
+graphs and/or tables.  
+
+**Solution:** The source code `ps3_q1.R` below as set up to allow copy and paste
+of previously used plotting and table commands. 
+
+```{r}
+source('./ps3_q1.R')
+```
+
+a. What percent of homes have stucco construction as the *major outside wall material* within each division? Which division has the highest proportion? Which the lowest? 
+
+```{r q3a_table}
+caption = 'Proportion of homes with stucco construction within each census division in 2015. Estimates are based on the residential energy consumption survey.'
+p_stucco_tab = 
+  p_stucco[order(-p_stucco),
+           .(`Census Division` = division,
+             `% Stucco Homes (95% CI)` = sprintf('%4.1f%% (%4.1f, %4.1f)',
+                                                100*p_stucco, 100*lwr, 100*upr)
+            )]
+p_stucco_tab %>%
+  knitr::kable( align = 'r', caption = caption)
+```
+
+```{r q3a_figure, fig.cap = cap}
+cap = ' Estimated percent of homes within each census division with major wall type of stucco.'
+
+p_stucco = p_stucco[order(-p_stucco)]
+p_stucco[ ,Division := factor(as.character(division),  as.character(division)) ]
+
+p_stucco %>%
+  ggplot( aes( x = Division, y = 100*p_stucco) ) +
+  geom_col( fill = 'navy' ) +
+  geom_errorbar( aes( ymin = 100*lwr, ymax = 100*upr), 
+                  col = 'darkslategrey') +
+  theme_bw() +
+  ylab('% Stucco Homes') +
+  xlab('Census Division') +
+  theme( axis.text.x = element_text(size = 8, angle = 90))
+```
+
+b. What is the average total electricity usage in kilowatt hours
+in each division? Answer the same question stratified by urban and rural status. 
+
+```{r q3b_table1}
+cap = 'Average annual electricity utilization by Census Division in kwh/home.'
+# Multiplier for 95% CI
+m = qnorm(.975)
+# Pretty printing
+pwc = function(x) format(round(x), big.mark = ',')
+kwh[order(-est), 
+    .(`Census Division` = division,
+      `Average Electricity Usage, kwh/home (95% CI)` = 
+       sprintf('%s, (%s - %s)', pwc(est), pwc(est - m*se), pwc(est + m*se) )
+     ) ] %>%
+ knitr::kable( align = 'r', caption = cap)
+```
+
+```{r q3b_figure1, fig.cap = cap}
+cap = 'Estimated average annual electricity usage in khw/home for
+each of 10 census divisions.'
+kwh = kwh[order(-est)]
+kwh[ , div := factor(as.character(division), as.character(division))]
+kwh %>% 
+  ggplot( aes(x = div, y = est) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) +
+  coord_flip() +
+  theme_bw() +
+  ylab('kwh/home') +
+  xlab('')
+```
+
+```{r q3b_table2, figure.cap = cap}
+cap = 'Average electricity utilization in kwh per home for urban and rural areas witihin each census division.'
+# Order by simple average usage
+kwh_div_urban[, div_avg := mean(est), division]
+kwh_div_urban = kwh_div_urban[order(-div_avg)]
+kwh_div_urban[ , div := factor(division, levels = unique(division) ) ]
+
+# Table
+kwh_div_urban[, 
+ .(`Census Division` = div,
+   ci = sprintf('%s, (%6s - %6s)', pwc(est), pwc(est - m*se), pwc(est + m*se)),
+   Rurality = ifelse(urban, 'Urban, kwh/home (95% CI)', 
+                      'Rural, kwh/home (95% CI)')
+  )] %>%
+  dcast(`Census Division` ~ Rurality, value.var = 'ci') %>%
+  knitr::kable( align  = 'r', cap = cap)
+```
+
+```{r q3b_figure3}
+cap = 'Estimated average annual electricity usage in khw/home for
+rural and urban areas in each of 10 census divisions.'
+kwh_div_urban[,     Rurality := ifelse(urban, 'Urban', 'Rural')] 
+
+kwh_div_urban %>%
+  ggplot( aes(x = div, y = est, color = Rurality) ) +
+  geom_point( position = position_dodge(.5) ) +
+  geom_errorbar( aes(ymin = lwr, ymax = upr),
+                 position = position_dodge(.5)
+  ) +
+  scale_color_manual( values = c('navy', 'darkred')[2:1]) +
+  coord_flip() +
+  theme_bw() +
+  ylab('kwh/home') +
+  xlab('')
+```
+
+c. Which division has the largest disparity between urban and rural areas in terms of the proportion of homes with internet access?
+
+
+```{r q3c_table}
+cap = "Urban and rural disparity in internet access for the ten US Census Division in 2015. "
+internet_disp %>%
+  knitr::kable( align = 'r', caption = cap )
+```
+
+*In the Mountain South division there is an 18.5% disparity between Urban and Rural internet access. This is approximately twice as large as the next largest estimated disparity and the only estimate whose confidence interval does not include zero.*
+
+```{r q3_c_graph}
+internet_ru[, `:=`(Rurality = ifelse(urban, 'Urban', 'Rural'),
+                    division = factor( as.character(division),
+              as.character(
+                {internet_disp[order(Rural)]}$Division)))]
+
+internet_ru %>%
+  ggplot( aes(x = division, y = est, fill = Rurality) ) +
+  geom_col( position = position_dodge() ) +
+  geom_errorbar( aes(ymin = lwr, ymax = upr), 
+                 position = position_dodge(),
+                 col = 'slategrey') +
+  theme_bw() + 
+  xlab('') +
+  ylab('% of homes with internet access') +
+  ylim(c(0, 100)) +
+  coord_flip() +
+  scale_fill_manual(values = c('darkred', 'navy'))
+```
+
+
+## Question 2 [25 points]
+
+In this question you will design a Monte Carlo study in R to compare the 
+performance of different methods that adjust for [multiple comparisons](https://xkcd.com/882/).  You can read more about each of these  methods by referring to `help(p.adjust)` in R and the references listed there.
+
+Throughout this question, let $n = 1000$, $p = 100$ and 
+
+$$
+\beta_i = 
+\begin{cases} 
+1 \qquad i \in \{1, \dots, 10\}, \\
+0 \qquad \textrm{else}.
+\end{cases}
+$$
+
+Let $X \in \mathbb{R}^{n \times p}$ with $X \sim N(0_p, \Sigma)$ and 
+$Y \sim N(X\beta, \sigma^2I_n)$ where $I_n$ is an $n \times n$ identify matrix 
+and $\Sigma$ is a $p \times p$, symmetric, positive definite covariance matrix.
+
+a.  Write a function that accepts matrices `X` and `beta` and returns a `p` by `mc_rep` matrix of p-values corresponding to p-values for the hypothesis tests:
+    $$ H_0: \beta_i = 0, H_1: \beta_i \ne 0. $$ 
+In addition to `X` and `beta` your function should have arguments `sigma` ($\sigma$) and 
+`mc_rep` controlling the error variance of $Y$ and number of Monte Carlo replicates, respectively. Your function should solve the least-squares problems using the QR decomposition of $X'X$. This decomposition should only be computed once each time your function is called. 
+    i. Refer to the course notes to find $\hat \beta$. 
+    i. Use $Y$ and $\hat Y = X \hat \beta$ to estimate the error variance for each
+   Monte Carlo trial $m$:
+    $$
+    \hat \sigma_m^2 = \frac{1}{n-p} \sum_{i = 1}^n (Y_{im} - \hat Y_{im})^2
+    $$
+    i. Use the result from ii and the QR decomposition to find the variance of $\hat \beta_i$, $v_i = \hat\sigma^2(X'X)^{-1}_{ii}$. [Note: you will need to do some algebra to determine how to compute $(X'X)^{-1}$ using Q and R. Or you can use the function `chol2inv()`.]
+    i. Form $Z_i = \hat \beta_i / \sqrt{v_i}$ and find $p = 2(1 - \Phi^{-1}(|Z_i|)).$
+  
+   Test your function with a specific $X$ and $Y$ by comparing to the output from appropriate methods applied to the object returned by `lm(Y ~ 0 + X)`. It's okay
+   if there is some finite precision error less than ~1e-3 in magnitude. Hint:
+   use `set.seed()` to generate the same $Y$ inside and outside the scope of the function for the purpose of testing. 
+
+b. Choose $\Sigma$ and $\sigma$ as you like. Use the Cholesky factorization of 
+$\Sigma$ to generate a single $X$. Pass $X$, $\beta$, and $\sigma$ to your function
+from the previous part.
+
+c. Write a function `evaluate` that takes your results and a set of indices where $\beta \ne 0$,  and returns Monte Carlo estimates for the following quantities:
+
+   + The family wise error rate
+   + The false discovery rate
+   + The sensitivity
+   + The specificity.
+
+See this [page](https://en.wikipedia.org/wiki/Sensitivity_and_specificity#Sensitivity_index) for additional details. 
+
+d. Apply your function from the previous part to the matrix of uncorrected P-values generated in part B.  Use the function `p.adjust()` to correct these p-values for multiple comparisons using 'Bonferroni', 'Holm', 'BH' (Benjamini-Hochberg), and 'BY' (Benjamini-Yekuteli).  Use your `evaluate()` function for each set of adjusted p-values.  
+
+e. Produce one or more nicely formatted graphs or tables reporting your results.
+Briefly discuss what you found.
+
+**Solution:**
+```{r}
+source('./ps3_q2.R')
+
+cap = '_Results from a Monte Carlo study comparing p-value correction methods in the context of multiple regression._'
+
+ps3_q2result[,.(Method = method, FWER = fwer, FDR = fdr, 
+                Sensitivity = sens, Specificity = spec)] %>%
+  knitr::kable(caption = cap)
+```
+
+Among the mehtods controlling the FWER, the Holm and Bonferroni methods are nearly 
+identical and both control the FWER at slightly better than the nominal level. 
+The BH and BY methods control the FDR; BH has FDR near the nominal .05 rate while
+BY is much more conservative. Because it gives up control of the FWER, the BH method
+has much higher sensitivity while BY has the lowest sesnsitivity as it guards
+against any form of dependence.  
+
+
+
+## Question 3 (Optional) [30 points]
+
+This is a bonus question related to problem 6 from the midterm. First, review the
+script written in Stata available [here](https://github.com/jbhender/Stats506_F18/tree/master/solutions/PS3). In this question, you will work through
+various options for translating this analysis into R. You may submit all or some of these, but each part must be entirely correct to earn the points listed. 
+
+
+a. Write a translation using `data.table` for the computations. [5 pts]
+
+b. Write a function to compute the univariate regression coefficient by group for 
+arbitrary dependent, independent, and grouping variables. Use `data.table` for computations within your function. Test your function by showing it produces the same results as in part a. [10 pts]
+
+c. Compute the regression coefficients using the dplyr verb `summarize_at()`. [5 pts]
+
+d. Write a function similar to the one in part b to compute arbitrary univariate 
+regression coefficients by group.  Use `dplyr` for computations within your function. You should read the "Programming with dplyr" vignette at `vignette('programming', 'dplyr')` before attempting this. Warning: this may be difficult to debug! [10 points]
+
+**Solution:**
+See `ps3_q3.R` for details.
