@@ -2,10 +2,10 @@
  * using PROC SQL and the RECS data.
  *
  * Author: James Henderson (jbhender@umich.edu)
- * Date: Nov 15, 2017
+ * Date: Nov 29, 2018
  */ 
 
-libname mylib '../../data/';
+libname mylib '~/Stats506_F18/Examples/SAS/data/';
 
 proc sql;
 
