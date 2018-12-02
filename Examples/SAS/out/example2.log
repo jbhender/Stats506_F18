@@ -1,0 +1,108 @@
+1                                                          The SAS System                          11:04 Thursday, November 29, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads the RECS data from:
+5           ./data/recs2009_public_v4.sas7bdat
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Then runs the proc contents procedure.
+9          
+10         Author: James Henderson (jbhender@umich.edu)
+11         Date: Nov 28, 2018
+12          *****************************************************
+13         */
+14         
+15         /* data library for reading/writing data */
+16         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+17         
+18         /* Create a data set recs referring to existing file */
+19         data recs;
+20          set mylib.recs2009_public_v4;
+21         
+
+2                                                          The SAS System                          11:04 Thursday, November 29, 2018
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RECS has 12083 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.09 seconds
+      cpu time            0.10 seconds
+      
+
+22         proc contents data=recs;
+23         
+
+NOTE: The PROCEDURE CONTENTS printed pages 1-20.
+NOTE: PROCEDURE CONTENTS used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.01 seconds
+      
+
+24         proc print data=mylib.recs2009(obs=5);
+25          var DOEID;
+26         
+
+NOTE: There were 5 observations read from the data set MYLIB.RECS2009.
+NOTE: The PROCEDURE PRINT printed page 21.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+27         proc print data=recs(obs=5);
+28          var DOEID;
+29         
+30         run;
+
+NOTE: There were 5 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE PRINT printed page 22.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+31         
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.16 seconds
+      cpu time            0.14 seconds
+      

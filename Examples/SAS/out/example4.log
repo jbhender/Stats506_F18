@@ -1,0 +1,168 @@
+1                                                          The SAS System                          11:16 Thursday, November 29, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads the RECS data from:
+5           ./data/recs2009_public.sas7bdat
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Then demonstrates sevaral procs for descriptive statistics:
+9          
+10         
+11         Author: James Henderson (jbhender@umich.edu)
+12         Date: Nov 28, 2018
+13          *****************************************************
+14         */
+15         
+16         /* data library for reading/writing data */
+17         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+18         
+19         /* create a short name and working copy for recs data */
+20         data recs;
+21          set mylib.recs2009_public_v4;
+22         
+2                                                          The SAS System                          11:16 Thursday, November 29, 2018
+
+23         /* data step to create urban indicator */
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RECS has 12083 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.09 seconds
+      cpu time            0.10 seconds
+      
+
+24         data recs;
+25          set recs;
+26          urban=1;
+27          if ur='R' then urban=0;
+28         
+29         /********
+30          Tabulate
+31          ********
+32         */
+33         
+34         /* get max, min, and Nobs for regionC */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.RECS has 12083 observations and 941 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.13 seconds
+      cpu time            0.14 seconds
+      
+
+35         proc tabulate data=recs;
+36          var regionc;
+37          table regionc*N regionc*max regionc*min;
+38         
+39         /* get # of urban / rural obs by regionc */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE TABULATE printed page 1.
+NOTE: PROCEDURE TABULATE used (Total process time):
+      real time           0.03 seconds
+      cpu time            0.03 seconds
+      
+
+40         proc tabulate data=recs;
+41          var urban;
+42          class ur;
+43          table urban*sum ur*N;
+44         
+45         /* grouped tables */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE TABULATE printed page 2.
+NOTE: PROCEDURE TABULATE used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.02 seconds
+      
+
+46         proc tabulate data=recs;
+47          var cdd65;
+48          class regionc;
+3                                                          The SAS System                          11:16 Thursday, November 29, 2018
+
+49          table regionc, cdd65*N cdd65*mean;
+50         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE TABULATE printed page 3.
+NOTE: PROCEDURE TABULATE used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.02 seconds
+      
+
+51         proc tabulate data=recs;
+52          var cdd65;
+53          class regionc;
+54          table cdd65*N*regionc cdd65*mean*regionc;
+55         
+56         /* twice stratified tables */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE TABULATE printed page 4.
+NOTE: PROCEDURE TABULATE used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.02 seconds
+      
+
+57         proc tabulate data=recs;
+58          var cdd65;
+59          class regionc ur;
+60          table regionc, cdd65*mean*ur;
+61         
+62         
+63         run;
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE TABULATE printed page 5.
+NOTE: PROCEDURE TABULATE used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.02 seconds
+      
+
+64         
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.38 seconds
+      cpu time            0.36 seconds
+      

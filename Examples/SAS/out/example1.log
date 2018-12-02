@@ -1,0 +1,3053 @@
+1                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file imports RECS data from:
+5           ./data/recs2009_public.csv
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Then writes a SAS7BDAT native format to a data library.
+9          
+10         Author: James Henderson (jbhender@umich.edu)
+11         Date: Nov 28, 2018
+12          *****************************************************
+13         */
+14         
+15         /* 80: ************************************************************************/
+16         
+17         /* data library for reading/writing data */
+18         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+19         
+20         /* import delimited data */
+21         proc import datafile='./data/recs2009_public.csv' out=recs;
+22         
+2                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+23         /* use a data step and a set statement to save */
+
+24         data mylib.recs2009;
+25          /**********************************************************************
+26          *   PRODUCT:   SAS
+27          *   VERSION:   9.3
+28          *   CREATOR:   External File Interface
+29          *   DATE:      29NOV18
+30          *   DESC:      Generated SAS Datastep Code
+31          *   TEMPLATE SOURCE:  (None Specified.)
+32          ***********************************************************************/
+33             data WORK.RECS    ;
+34             %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+35             infile './data/recs2009_public.csv' delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+36                informat DOEID best32. ;
+37                informat REGIONC best32. ;
+38                informat DIVISION best32. ;
+39                informat REPORTABLE_DOMAIN best32. ;
+40                informat TYPEHUQ best32. ;
+41                informat NWEIGHT best32. ;
+42                informat HDD65 best32. ;
+43                informat CDD65 best32. ;
+44                informat HDD30YR best32. ;
+45                informat CDD30YR best32. ;
+46                informat Climate_Region_Pub best32. ;
+47                informat AIA_Zone best32. ;
+48                informat METROMICRO $7. ;
+49                informat UR $3. ;
+50                informat KOWNRENT best32. ;
+51                informat CONDCOOP best32. ;
+52                informat YEARMADE best32. ;
+53                informat YEARMADERANGE best32. ;
+54                informat OCCUPYYRANGE best32. ;
+55                informat CONVERSION best32. ;
+56                informat ORIG1FAM best32. ;
+57                informat LOOKLIKE best32. ;
+58                informat NUMFLRS best32. ;
+59                informat NUMAPTS best32. ;
+60                informat WALLTYPE best32. ;
+61                informat ROOFTYPE best32. ;
+62                informat STUDIO best32. ;
+63                informat NAPTFLRS best32. ;
+64                informat STORIES best32. ;
+65                informat TYPEHUQ4 best32. ;
+66                informat BEDROOMS best32. ;
+67                informat NCOMBATH best32. ;
+68                informat NHAFBATH best32. ;
+69                informat OTHROOMS best32. ;
+70                informat TOTROOMS best32. ;
+71                informat CELLAR best32. ;
+72                informat CRAWL best32. ;
+73                informat CONCRETE best32. ;
+74                informat BASEFIN best32. ;
+75                informat FINBASERMS best32. ;
+76                informat BASEHEAT best32. ;
+77                informat BASEHT2 best32. ;
+78                informat PCTBSTHT best32. ;
+79                informat BASECOOL best32. ;
+3                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+80                informat BASECL2 best32. ;
+81                informat PCTBSTCL best32. ;
+82                informat BASEUSE best32. ;
+83                informat ATTIC best32. ;
+84                informat ATTICFIN best32. ;
+85                informat FINATTRMS best32. ;
+86                informat ATTCHEAT best32. ;
+87                informat ATTCHT2 best32. ;
+88                informat PCTATTHT best32. ;
+89                informat ATTCCOOL best32. ;
+90                informat ATTCCL2 best32. ;
+91                informat PCTATTCL best32. ;
+92                informat ATTICUSE best32. ;
+93                informat PRKGPLC1 best32. ;
+94                informat SIZEOFGARAGE best32. ;
+95                informat GARGLOC best32. ;
+96                informat GARGHEAT best32. ;
+97                informat GARGCOOL best32. ;
+98                informat PRKGPLC2 best32. ;
+99                informat SIZEOFDETACH best32. ;
+100               informat OUTLET best32. ;
+101               informat ZKOWNRENT best32. ;
+102               informat ZCONDCOOP best32. ;
+103               informat ZYEARMADE best32. ;
+104               informat ZYEARMADERANGE best32. ;
+105               informat ZOCCUPYYRANGE best32. ;
+106               informat ZCONVERSION best32. ;
+107               informat ZORIG1FAM best32. ;
+108               informat ZLOOKLIKE best32. ;
+109               informat ZNUMFLRS best32. ;
+110               informat ZNUMAPTS best32. ;
+111               informat ZWALLTYPE best32. ;
+112               informat ZROOFTYPE best32. ;
+113               informat ZSTUDIO best32. ;
+114               informat ZNAPTFLRS best32. ;
+115               informat ZSTORIES best32. ;
+116               informat ZTYPEHUQ4 best32. ;
+117               informat ZBEDROOMS best32. ;
+118               informat ZNCOMBATH best32. ;
+119               informat ZNHAFBATH best32. ;
+120               informat ZOTHROOMS best32. ;
+121               informat ZCELLAR best32. ;
+122               informat ZCRAWL best32. ;
+123               informat ZCONCRETE best32. ;
+124               informat ZBASEFIN best32. ;
+125               informat ZFINBASERMS best32. ;
+126               informat ZBASEHEAT best32. ;
+127               informat ZBASEHT2 best32. ;
+128               informat ZPCTBSTHT best32. ;
+129               informat ZBASECOOL best32. ;
+130               informat ZBASECL2 best32. ;
+131               informat ZPCTBSTCL best32. ;
+132               informat ZBASEUSE best32. ;
+133               informat ZATTIC best32. ;
+134               informat ZATTICFIN best32. ;
+135               informat ZFINATTRMS best32. ;
+136               informat ZATTCHEAT best32. ;
+137               informat ZATTCHT2 best32. ;
+4                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+138               informat ZPCTATTHT best32. ;
+139               informat ZATTCCOOL best32. ;
+140               informat ZPCTATTCL best32. ;
+141               informat ZATTCCL2 best32. ;
+142               informat ZATTICUSE best32. ;
+143               informat ZPRKGPLC1 best32. ;
+144               informat ZSIZEOFGARAGE best32. ;
+145               informat ZGARGLOC best32. ;
+146               informat ZGARGHEAT best32. ;
+147               informat ZGARGCOOL best32. ;
+148               informat ZPRKGPLC2 best32. ;
+149               informat ZSIZEOFDETACH best32. ;
+150               informat STOVEN best32. ;
+151               informat STOVENFUEL best32. ;
+152               informat STOVE best32. ;
+153               informat STOVEFUEL best32. ;
+154               informat OVEN best32. ;
+155               informat OVENFUEL best32. ;
+156               informat OVENUSE best32. ;
+157               informat OVENCLN best32. ;
+158               informat TYPECLN best32. ;
+159               informat MICRO best32. ;
+160               informat AMTMICRO best32. ;
+161               informat DEFROST best32. ;
+162               informat OUTGRILL best32. ;
+163               informat OUTGRILLFUEL best32. ;
+164               informat TOPGRILL best32. ;
+165               informat STGRILA best32. ;
+166               informat TOASTER best32. ;
+167               informat NUMMEAL best32. ;
+168               informat FUELFOOD best32. ;
+169               informat COFFEE best32. ;
+170               informat NUMFRIG best32. ;
+171               informat TYPERFR1 best32. ;
+172               informat SIZRFRI1 best32. ;
+173               informat REFRIGT1 best32. ;
+174               informat ICE best32. ;
+175               informat AGERFRI1 best32. ;
+176               informat ESFRIG best32. ;
+177               informat REPLCFRI best32. ;
+178               informat HELPFRI best32. ;
+179               informat HELPFRIY best32. ;
+180               informat TYPERFR2 best32. ;
+181               informat SIZRFRI2 best32. ;
+182               informat REFRIGT2 best32. ;
+183               informat MONRFRI2 best32. ;
+184               informat AGERFRI2 best32. ;
+185               informat ESFRIG2 best32. ;
+186               informat TYPERFR3 best32. ;
+187               informat SIZRFRI3 best32. ;
+188               informat REFRIGT3 best32. ;
+189               informat MONRFRI3 best32. ;
+190               informat AGERFRI3 best32. ;
+191               informat ESFRIG3 best32. ;
+192               informat SEPFREEZ best32. ;
+193               informat NUMFREEZ best32. ;
+194               informat UPRTFRZR best32. ;
+195               informat SIZFREEZ best32. ;
+5                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+196               informat FREEZER best32. ;
+197               informat AGEFRZR best32. ;
+198               informat REPLCFRZ best32. ;
+199               informat HELPFRZ best32. ;
+200               informat HELPFRZY best32. ;
+201               informat UPRTFRZR2 best32. ;
+202               informat SIZFREEZ2 best32. ;
+203               informat FREEZER2 best32. ;
+204               informat AGEFRZR2 best32. ;
+205               informat DISHWASH best32. ;
+206               informat DWASHUSE best32. ;
+207               informat AGEDW best32. ;
+208               informat ESDISHW best32. ;
+209               informat REPLCDW best32. ;
+210               informat HELPDW best32. ;
+211               informat HELPDWY best32. ;
+212               informat ZSTOVEN best32. ;
+213               informat ZSTOVENFUEL best32. ;
+214               informat ZSTOVE best32. ;
+215               informat ZSTOVEFUEL best32. ;
+216               informat ZOVEN best32. ;
+217               informat ZOVENFUEL best32. ;
+218               informat ZOVENUSE best32. ;
+219               informat ZOVENCLN best32. ;
+220               informat ZTYPECLN best32. ;
+221               informat ZMICRO best32. ;
+222               informat ZAMTMICRO best32. ;
+223               informat ZDEFROST best32. ;
+224               informat ZOUTGRILL best32. ;
+225               informat ZOUTGRILLFUEL best32. ;
+226               informat ZTOPGRILL best32. ;
+227               informat ZSTGRILA best32. ;
+228               informat ZTOASTER best32. ;
+229               informat ZNUMMEAL best32. ;
+230               informat ZFUELFOOD best32. ;
+231               informat ZCOFFEE best32. ;
+232               informat ZNUMFRIG best32. ;
+233               informat ZTYPERFR1 best32. ;
+234               informat ZSIZRFRI1 best32. ;
+235               informat ZREFRIGT1 best32. ;
+236               informat ZICE best32. ;
+237               informat ZAGERFRI1 best32. ;
+238               informat ZTYPERFR2 best32. ;
+239               informat ZSIZRFRI2 best32. ;
+240               informat ZREFRIGT2 best32. ;
+241               informat ZMONRFRI2 best32. ;
+242               informat ZAGERFRI2 best32. ;
+243               informat ZTYPERFR3 best32. ;
+244               informat ZSIZRFRI3 best32. ;
+245               informat ZREFRIGT3 best32. ;
+246               informat ZMONRFRI3 best32. ;
+247               informat ZAGERFRI3 best32. ;
+248               informat ZSEPFREEZ best32. ;
+249               informat ZNUMFREEZ best32. ;
+250               informat ZUPRTFRZR best32. ;
+251               informat ZSIZFREEZ best32. ;
+252               informat ZFREEZER best32. ;
+253               informat ZAGEFRZR best32. ;
+6                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+254               informat ZUPRTFRZR2 best32. ;
+255               informat ZSIZFREEZ2 best32. ;
+256               informat ZFREEZER2 best32. ;
+257               informat ZAGEFRZR2 best32. ;
+258               informat ZDISHWASH best32. ;
+259               informat ZDWASHUSE best32. ;
+260               informat ZAGEDW best32. ;
+261               informat CWASHER best32. ;
+262               informat TOPFRONT best32. ;
+263               informat WASHLOAD best32. ;
+264               informat WASHTEMP best32. ;
+265               informat RNSETEMP best32. ;
+266               informat AGECWASH best32. ;
+267               informat ESCWASH best32. ;
+268               informat REPLCCW best32. ;
+269               informat HELPCW best32. ;
+270               informat HELPCWY best32. ;
+271               informat DRYER best32. ;
+272               informat DRYRFUEL best32. ;
+273               informat DRYRUSE best32. ;
+274               informat AGECDRYER best32. ;
+275               informat TVCOLOR best32. ;
+276               informat TVSIZE1 best32. ;
+277               informat TVTYPE1 best32. ;
+278               informat CABLESAT1 best32. ;
+279               informat COMBODVR1 best32. ;
+280               informat DVR1 best32. ;
+281               informat DIGITSTB1 best32. ;
+282               informat PLAYSTA1 best32. ;
+283               informat COMBOVCRDVD1 best32. ;
+284               informat VCR1 best32. ;
+285               informat DVD1 best32. ;
+286               informat TVAUDIOSYS1 best32. ;
+287               informat OTHERSTB1 best32. ;
+288               informat TVONWD1 best32. ;
+289               informat TVONWDWATCH1 best32. ;
+290               informat TVONWE1 best32. ;
+291               informat TVONWEWATCH1 best32. ;
+292               informat TVSIZE2 best32. ;
+293               informat TVTYPE2 best32. ;
+294               informat CABLESAT2 best32. ;
+295               informat COMBODVR2 best32. ;
+296               informat DVR2 best32. ;
+297               informat DIGITSTB2 best32. ;
+298               informat PLAYSTA2 best32. ;
+299               informat COMBOVCRDVD2 best32. ;
+300               informat VCR2 best32. ;
+301               informat DVD2 best32. ;
+302               informat TVAUDIOSYS2 best32. ;
+303               informat OTHERSTB2 best32. ;
+304               informat TVONWD2 best32. ;
+305               informat TVONWDWATCH2 best32. ;
+306               informat TVONWE2 best32. ;
+307               informat TVONWEWATCH2 best32. ;
+308               informat TVSIZE3 best32. ;
+309               informat TVTYPE3 best32. ;
+310               informat CABLESAT3 best32. ;
+311               informat COMBODVR3 best32. ;
+7                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+312               informat DVR3 best32. ;
+313               informat DIGITSTB3 best32. ;
+314               informat PLAYSTA3 best32. ;
+315               informat COMBOVCRDVD3 best32. ;
+316               informat VCR3 best32. ;
+317               informat DVD3 best32. ;
+318               informat TVAUDIOSYS3 best32. ;
+319               informat OTHERSTB3 best32. ;
+320               informat TVONWD3 best32. ;
+321               informat TVONWDWATCH3 best32. ;
+322               informat TVONWE3 best32. ;
+323               informat TVONWEWATCH3 best32. ;
+324               informat COMPUTER best32. ;
+325               informat NUMPC best32. ;
+326               informat PCTYPE1 best32. ;
+327               informat MONITOR1 best32. ;
+328               informat TIMEON1 best32. ;
+329               informat PCONOFF1 best32. ;
+330               informat PCSLEEP1 best32. ;
+331               informat PCTYPE2 best32. ;
+332               informat MONITOR2 best32. ;
+333               informat TIMEON2 best32. ;
+334               informat PCONOFF2 best32. ;
+335               informat PCSLEEP2 best32. ;
+336               informat PCTYPE3 best32. ;
+337               informat MONITOR3 best32. ;
+338               informat TIMEON3 best32. ;
+339               informat PCONOFF3 best32. ;
+340               informat PCSLEEP3 best32. ;
+341               informat INTERNET best32. ;
+342               informat INDIALUP best32. ;
+343               informat INDSL best32. ;
+344               informat INCABLE best32. ;
+345               informat INSATEL best32. ;
+346               informat INWIRELESS best32. ;
+347               informat PCPRINT best32. ;
+348               informat FAX best32. ;
+349               informat COPIER best32. ;
+350               informat WELLPUMP best32. ;
+351               informat DIPSTICK best32. ;
+352               informat SWAMPCOL best32. ;
+353               informat AQUARIUM best32. ;
+354               informat STEREO best32. ;
+355               informat NOCORD best32. ;
+356               informat ANSMACH best32. ;
+357               informat BATTOOLS best32. ;
+358               informat BATCHRG best32. ;
+359               informat CHRGPLGT best32. ;
+360               informat ELECDEV best32. ;
+361               informat ELECCHRG best32. ;
+362               informat CHRGPLGE best32. ;
+363               informat ZCWASHER best32. ;
+364               informat ZTOPFRONT best32. ;
+365               informat ZWASHLOAD best32. ;
+366               informat ZWASHTEMP best32. ;
+367               informat ZRNSETEMP best32. ;
+368               informat ZAGECWASH best32. ;
+369               informat ZDRYER best32. ;
+8                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+370               informat ZDRYRFUEL best32. ;
+371               informat ZDRYRUSE best32. ;
+372               informat ZAGECDRYER best32. ;
+373               informat ZTVCOLOR best32. ;
+374               informat ZTVSIZE1 best32. ;
+375               informat ZTVTYPE1 best32. ;
+376               informat ZCABLESAT1 best32. ;
+377               informat ZCOMBODVR1 best32. ;
+378               informat ZDVR1 best32. ;
+379               informat ZDIGITSTB1 best32. ;
+380               informat ZPLAYSTA1 best32. ;
+381               informat ZCOMBOVCRDVD1 best32. ;
+382               informat ZVCR1 best32. ;
+383               informat ZDVD1 best32. ;
+384               informat ZTVAUDIOSYS1 best32. ;
+385               informat ZOTHERSTB1 best32. ;
+386               informat ZTVONWD1 best32. ;
+387               informat ZTVONWDWATCH1 best32. ;
+388               informat ZTVONWE1 best32. ;
+389               informat ZTVONWEWATCH1 best32. ;
+390               informat ZTVSIZE2 best32. ;
+391               informat ZTVTYPE2 best32. ;
+392               informat ZCABLESAT2 best32. ;
+393               informat ZCOMBODVR2 best32. ;
+394               informat ZDVR2 best32. ;
+395               informat ZDIGITSTB2 best32. ;
+396               informat ZPLAYSTA2 best32. ;
+397               informat ZCOMBOVCRDVD2 best32. ;
+398               informat ZVCR2 best32. ;
+399               informat ZDVD2 best32. ;
+400               informat ZTVAUDIOSYS2 best32. ;
+401               informat ZOTHERSTB2 best32. ;
+402               informat ZTVONWD2 best32. ;
+403               informat ZTVONWDWATCH2 best32. ;
+404               informat ZTVONWE2 best32. ;
+405               informat ZTVONWEWATCH2 best32. ;
+406               informat ZTVSIZE3 best32. ;
+407               informat ZTVTYPE3 best32. ;
+408               informat ZCABLESAT3 best32. ;
+409               informat ZCOMBODVR3 best32. ;
+410               informat ZDVR3 best32. ;
+411               informat ZDIGITSTB3 best32. ;
+412               informat ZPLAYSTA3 best32. ;
+413               informat ZCOMBOVCRDVD3 best32. ;
+414               informat ZVCR3 best32. ;
+415               informat ZDVD3 best32. ;
+416               informat ZTVAUDIOSYS3 best32. ;
+417               informat ZOTHERSTB3 best32. ;
+418               informat ZTVONWD3 best32. ;
+419               informat ZTVONWDWATCH3 best32. ;
+420               informat ZTVONWE3 best32. ;
+421               informat ZTVONWEWATCH3 best32. ;
+422               informat ZCOMPUTER best32. ;
+423               informat ZNUMPC best32. ;
+424               informat ZPCTYPE1 best32. ;
+425               informat ZMONITOR1 best32. ;
+426               informat ZTIMEON1 best32. ;
+427               informat ZPCONOFF1 best32. ;
+9                                                          The SAS System                          11:01 Thursday, November 29, 2018
+
+428               informat ZPCSLEEP1 best32. ;
+429               informat ZPCTYPE2 best32. ;
+430               informat ZMONITOR2 best32. ;
+431               informat ZTIMEON2 best32. ;
+432               informat ZPCONOFF2 best32. ;
+433               informat ZPCSLEEP2 best32. ;
+434               informat ZPCTYPE3 best32. ;
+435               informat ZMONITOR3 best32. ;
+436               informat ZTIMEON3 best32. ;
+437               informat ZPCONOFF3 best32. ;
+438               informat ZPCSLEEP3 best32. ;
+439               informat ZINTERNET best32. ;
+440               informat ZINDIALUP best32. ;
+441               informat ZINDSL best32. ;
+442               informat ZINCABLE best32. ;
+443               informat ZINSATEL best32. ;
+444               informat ZINWIRELESS best32. ;
+445               informat ZPCPRINT best32. ;
+446               informat ZFAX best32. ;
+447               informat ZCOPIER best32. ;
+448               informat ZWELLPUMP best32. ;
+449               informat ZDIPSTICK best32. ;
+450               informat ZSWAMPCOL best32. ;
+451               informat ZAQUARIUM best32. ;
+452               informat ZSTEREO best32. ;
+453               informat ZNOCORD best32. ;
+454               informat ZANSMACH best32. ;
+455               informat ZBATTOOLS best32. ;
+456               informat ZBATCHRG best32. ;
+457               informat ZCHRGPLGT best32. ;
+458               informat ZELECDEV best32. ;
+459               informat ZELECCHRG best32. ;
+460               informat ZCHRGPLGE best32. ;
+461               informat HEATHOME best32. ;
+462               informat DNTHEAT best32. ;
+463               informat EQUIPNOHEAT best32. ;
+464               informat FUELNOHEAT best32. ;
+465               informat EQUIPM best32. ;
+466               informat FUELHEAT best32. ;
+467               informat MAINTHT best32. ;
+468               informat EQUIPAGE best32. ;
+469               informat REPLCHT best32. ;
+470               informat HELPHT best32. ;
+471               informat HELPHTY best32. ;
+472               informat HEATOTH best32. ;
+473               informat EQUIPAUX best32. ;
+474               informat REVERSE best32. ;
+475               informat WARMAIR best32. ;
+476               informat FURNFUEL best32. ;
+477               informat STEAMR best32. ;
+478               informat RADFUEL best32. ;
+479               informat PERMELEC best32. ;
+480               informat PIPELESS best32. ;
+481               informat PIPEFUEL best32. ;
+482               informat ROOMHEAT best32. ;
+483               informat RMHTFUEL best32. ;
+484               informat WOODKILN best32. ;
+485               informat HSFUEL best32. ;
+10                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+486               informat CARRYEL best32. ;
+487               informat CARRYKER best32. ;
+488               informat CHIMNEY best32. ;
+489               informat FPFUEL best32. ;
+490               informat NGFPFLUE best32. ;
+491               informat USENGFP best32. ;
+492               informat RANGE best32. ;
+493               informat RNGFUEL best32. ;
+494               informat DIFEQUIP best32. ;
+495               informat DIFFUEL best32. ;
+496               informat EQMAMT best32. ;
+497               informat HEATROOM best32. ;
+498               informat THERMAIN best32. ;
+499               informat NUMTHERM best32. ;
+500               informat PROTHERM best32. ;
+501               informat AUTOHEATNITE best32. ;
+502               informat AUTOHEATDAY best32. ;
+503               informat TEMPHOME best32. ;
+504               informat TEMPGONE best32. ;
+505               informat TEMPNITE best32. ;
+506               informat MOISTURE best32. ;
+507               informat USEMOISTURE best32. ;
+508               informat ZHEATHOME best32. ;
+509               informat ZDNTHEAT best32. ;
+510               informat ZEQUIPNOHEAT best32. ;
+511               informat ZFUELNOHEAT best32. ;
+512               informat ZEQUIPM best32. ;
+513               informat ZFUELHEAT best32. ;
+514               informat ZMAINTHT best32. ;
+515               informat ZEQUIPAGE best32. ;
+516               informat ZHEATOTH best32. ;
+517               informat ZFURNFUEL best32. ;
+518               informat ZRADFUEL best32. ;
+519               informat ZPIPEFUEL best32. ;
+520               informat ZRMHTFUEL best32. ;
+521               informat ZHSFUEL best32. ;
+522               informat ZFPFUEL best32. ;
+523               informat ZNGFPFLUE best32. ;
+524               informat ZUSENGFP best32. ;
+525               informat ZRNGFUEL best32. ;
+526               informat ZDIFFUEL best32. ;
+527               informat ZEQMAMT best32. ;
+528               informat ZHEATROOM best32. ;
+529               informat ZTHERMAIN best32. ;
+530               informat ZNUMTHERM best32. ;
+531               informat ZPROTHERM best32. ;
+532               informat ZAUTOHEATNITE best32. ;
+533               informat ZAUTOHEATDAY best32. ;
+534               informat ZTEMPHOME best32. ;
+535               informat ZTEMPGONE best32. ;
+536               informat ZTEMPNITE best32. ;
+537               informat ZMOISTURE best32. ;
+538               informat ZUSEMOISTURE best32. ;
+539               informat NUMH2ONOTNK best32. ;
+540               informat NUMH2OHTRS best32. ;
+541               informat H2OTYPE1 best32. ;
+542               informat FUELH2O best32. ;
+543               informat WHEATOTH best32. ;
+11                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+544               informat WHEATSIZ best32. ;
+545               informat WHEATAGE best32. ;
+546               informat WHEATBKT best32. ;
+547               informat HELPWH best32. ;
+548               informat HELPWHY best32. ;
+549               informat H2OTYPE2 best32. ;
+550               informat FUELH2O2 best32. ;
+551               informat WHEATSIZ2 best32. ;
+552               informat WHEATAGE2 best32. ;
+553               informat ZNUMH2OHTRS best32. ;
+554               informat ZNUMH2ONOTNK best32. ;
+555               informat ZH2OTYPE1 best32. ;
+556               informat ZFUELH2O best32. ;
+557               informat ZWHEATOTH best32. ;
+558               informat ZWHEATSIZ best32. ;
+559               informat ZWHEATAGE best32. ;
+560               informat ZWHEATBKT best32. ;
+561               informat ZH2OTYPE2 best32. ;
+562               informat ZFUELH2O2 best32. ;
+563               informat ZWHEATSIZ2 best32. ;
+564               informat ZWHEATAGE2 best32. ;
+565               informat AIRCOND best32. ;
+566               informat DNTAC best32. ;
+567               informat COOLTYPENOAC best32. ;
+568               informat COOLTYPE best32. ;
+569               informat DUCTS best32. ;
+570               informat CENACHP best32. ;
+571               informat ACOTHERS best32. ;
+572               informat MAINTAC best32. ;
+573               informat AGECENAC best32. ;
+574               informat REPLCCAC best32. ;
+575               informat HELPCAC best32. ;
+576               informat HELPCACY best32. ;
+577               informat ACROOMS best32. ;
+578               informat USECENAC best32. ;
+579               informat THERMAINAC best32. ;
+580               informat PROTHERMAC best32. ;
+581               informat AUTOCOOLNITE best32. ;
+582               informat AUTOCOOLDAY best32. ;
+583               informat TEMPHOMEAC best32. ;
+584               informat TEMPGONEAC best32. ;
+585               informat TEMPNITEAC best32. ;
+586               informat NUMBERAC best32. ;
+587               informat WWACAGE best32. ;
+588               informat ESWWAC best32. ;
+589               informat REPLCWWAC best32. ;
+590               informat HELPWWAC best32. ;
+591               informat HELPWWACY best32. ;
+592               informat USEWWAC best32. ;
+593               informat NUMCFAN best32. ;
+594               informat USECFAN best32. ;
+595               informat TREESHAD best32. ;
+596               informat NOTMOIST best32. ;
+597               informat USENOTMOIST best32. ;
+598               informat ZAIRCOND best32. ;
+599               informat ZDNTAC best32. ;
+600               informat ZCOOLTYPENOAC best32. ;
+601               informat ZCOOLTYPE best32. ;
+12                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+602               informat ZDUCTS best32. ;
+603               informat ZCENACHP best32. ;
+604               informat ZACOTHERS best32. ;
+605               informat ZMAINTAC best32. ;
+606               informat ZAGECENAC best32. ;
+607               informat ZUSECENAC best32. ;
+608               informat ZACROOMS best32. ;
+609               informat ZTHERMAINAC best32. ;
+610               informat ZPROTHERMAC best32. ;
+611               informat ZAUTOCOOLNITE best32. ;
+612               informat ZAUTOCOOLDAY best32. ;
+613               informat ZTEMPHOMEAC best32. ;
+614               informat ZTEMPGONEAC best32. ;
+615               informat ZTEMPNITEAC best32. ;
+616               informat ZNUMBERAC best32. ;
+617               informat ZWWACAGE best32. ;
+618               informat ZUSEWWAC best32. ;
+619               informat ZNUMCFAN best32. ;
+620               informat ZUSECFAN best32. ;
+621               informat ZTREESHAD best32. ;
+622               informat ZNOTMOIST best32. ;
+623               informat ZUSENOTMOIST best32. ;
+624               informat HIGHCEIL best32. ;
+625               informat CATHCEIL best32. ;
+626               informat SWIMPOOL best32. ;
+627               informat POOL best32. ;
+628               informat FUELPOOL best32. ;
+629               informat RECBATH best32. ;
+630               informat FUELTUB best32. ;
+631               informat LGT12 best32. ;
+632               informat LGT12EE best32. ;
+633               informat LGT4 best32. ;
+634               informat LGT4EE best32. ;
+635               informat LGT1 best32. ;
+636               informat LGT1EE best32. ;
+637               informat NOUTLGTNT best32. ;
+638               informat LGTOEE best32. ;
+639               informat NGASLIGHT best32. ;
+640               informat INSTLCFL best32. ;
+641               informat HELPCFL best32. ;
+642               informat HELPCFLY best32. ;
+643               informat SLDDRS best32. ;
+644               informat DOOR1SUM best32. ;
+645               informat WINDOWS best32. ;
+646               informat TYPEGLASS best32. ;
+647               informat NEWGLASS best32. ;
+648               informat HELPWIN best32. ;
+649               informat HELPWINY best32. ;
+650               informat ADQINSUL best32. ;
+651               informat INSTLINS best32. ;
+652               informat AGEINS best32. ;
+653               informat HELPINS best32. ;
+654               informat HELPINSY best32. ;
+655               informat DRAFTY best32. ;
+656               informat INSTLWS best32. ;
+657               informat AGEWS best32. ;
+658               informat HELPWS best32. ;
+659               informat HELPWSY best32. ;
+13                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+660               informat AUDIT best32. ;
+661               informat AGEAUD best32. ;
+662               informat HELPAUD best32. ;
+663               informat HELPAUDY best32. ;
+664               informat ZHIGHCEIL best32. ;
+665               informat ZCATHCEIL best32. ;
+666               informat ZSWIMPOOL best32. ;
+667               informat ZPOOL best32. ;
+668               informat ZFUELPOOL best32. ;
+669               informat ZRECBATH best32. ;
+670               informat ZFUELTUB best32. ;
+671               informat ZLGT12 best32. ;
+672               informat ZLGT4 best32. ;
+673               informat ZLGT1 best32. ;
+674               informat ZNOUTLGTNT best32. ;
+675               informat ZNGASLIGHT best32. ;
+676               informat ZSLDDRS best32. ;
+677               informat ZDOOR1SUM best32. ;
+678               informat ZWINDOWS best32. ;
+679               informat ZTYPEGLASS best32. ;
+680               informat ZNEWGLASS best32. ;
+681               informat ZADQINSUL best32. ;
+682               informat ZINSTLINS best32. ;
+683               informat ZAGEINS best32. ;
+684               informat ZDRAFTY best32. ;
+685               informat ZINSTLWS best32. ;
+686               informat ZAGEWS best32. ;
+687               informat ZAUDIT best32. ;
+688               informat ZAGEAUD best32. ;
+689               informat USEEL best32. ;
+690               informat USENG best32. ;
+691               informat USELP best32. ;
+692               informat USEFO best32. ;
+693               informat USEKERO best32. ;
+694               informat USEWOOD best32. ;
+695               informat USESOLAR best32. ;
+696               informat USEOTH best32. ;
+697               informat ELWARM best32. ;
+698               informat ELECAUX best32. ;
+699               informat ELCOOL best32. ;
+700               informat ELWATER best32. ;
+701               informat ELFOOD best32. ;
+702               informat ELOTHER best32. ;
+703               informat UGWARM best32. ;
+704               informat UGASAUX best32. ;
+705               informat UGWATER best32. ;
+706               informat UGCOOK best32. ;
+707               informat UGOTH best32. ;
+708               informat LPWARM best32. ;
+709               informat LPGAUX best32. ;
+710               informat LPWATER best32. ;
+711               informat LPCOOK best32. ;
+712               informat LPOTHER best32. ;
+713               informat FOWARM best32. ;
+714               informat FOILAUX best32. ;
+715               informat FOWATER best32. ;
+716               informat FOOTHER best32. ;
+717               informat KRWARM best32. ;
+14                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+718               informat KEROAUX best32. ;
+719               informat KRWATER best32. ;
+720               informat KROTHER best32. ;
+721               informat WDWARM best32. ;
+722               informat WOODAUX best32. ;
+723               informat WDWATER best32. ;
+724               informat WDOTHUSE best32. ;
+725               informat SOLWARM best32. ;
+726               informat SOLARAUX best32. ;
+727               informat SOLWATER best32. ;
+728               informat SOLOTHER best32. ;
+729               informat OTHWARM best32. ;
+730               informat OTHERAUX best32. ;
+731               informat OTHWATER best32. ;
+732               informat OTHCOOK best32. ;
+733               informat ONSITE best32. ;
+734               informat ONSITEGRID best32. ;
+735               informat PELHEAT best32. ;
+736               informat PELHOTWA best32. ;
+737               informat PELCOOK best32. ;
+738               informat PELAC best32. ;
+739               informat PELLIGHT best32. ;
+740               informat OTHERWAYEL best32. ;
+741               informat PGASHEAT best32. ;
+742               informat PGASHTWA best32. ;
+743               informat PUGCOOK best32. ;
+744               informat PUGOTH best32. ;
+745               informat OTHERWAYNG best32. ;
+746               informat FOPAY best32. ;
+747               informat OTHERWAYFO best32. ;
+748               informat LPGPAY best32. ;
+749               informat OTHERWAYLPG best32. ;
+750               informat LPGDELV best32. ;
+751               informat KERODEL best32. ;
+752               informat KEROCASH best32. ;
+753               informat NOCRCASH best32. ;
+754               informat NKRGALNC best32. ;
+755               informat WOODLOGS best32. ;
+756               informat WDSCRAP best32. ;
+757               informat WDPELLET best32. ;
+758               informat WDOTHER best32. ;
+759               informat WOODAMT best32. ;
+760               informat NUMCORDS best32. ;
+761               informat ZONSITE best32. ;
+762               informat ZONSITEGRID best32. ;
+763               informat ZPELHEAT best32. ;
+764               informat ZPELHOTWA best32. ;
+765               informat ZPELCOOK best32. ;
+766               informat ZPELAC best32. ;
+767               informat ZPELLIGHT best32. ;
+768               informat ZOTHERWAYEL best32. ;
+769               informat ZPGASHEAT best32. ;
+770               informat ZPGASHTWA best32. ;
+771               informat ZPUGCOOK best32. ;
+772               informat ZPUGOTH best32. ;
+773               informat ZOTHERWAYNG best32. ;
+774               informat ZFOPAY best32. ;
+775               informat ZOTHERWAYFO best32. ;
+15                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+776               informat ZLPGPAY best32. ;
+777               informat ZOTHERWAYLPG best32. ;
+778               informat ZKERODEL best32. ;
+779               informat ZKEROCASH best32. ;
+780               informat ZNOCRCASH best32. ;
+781               informat ZNKRGALNC best32. ;
+782               informat ZWOODLOGS best32. ;
+783               informat ZWDSCRAP best32. ;
+784               informat ZWDPELLET best32. ;
+785               informat ZWDOTHER best32. ;
+786               informat ZWOODAMT best32. ;
+787               informat ZNUMCORDS best32. ;
+788               informat KFUELOT best32. ;
+789               informat HHSEX best32. ;
+790               informat EMPLOYHH best32. ;
+791               informat SPOUSE best32. ;
+792               informat SDESCENT best32. ;
+793               informat Householder_Race best32. ;
+794               informat EDUCATION best32. ;
+795               informat NHSLDMEM best32. ;
+796               informat HHAGE best32. ;
+797               informat AGEHHMEMCAT2 best32. ;
+798               informat AGEHHMEMCAT3 best32. ;
+799               informat AGEHHMEMCAT4 best32. ;
+800               informat AGEHHMEMCAT5 best32. ;
+801               informat AGEHHMEMCAT6 best32. ;
+802               informat AGEHHMEMCAT7 best32. ;
+803               informat AGEHHMEMCAT8 best32. ;
+804               informat AGEHHMEMCAT9 best32. ;
+805               informat AGEHHMEMCAT10 best32. ;
+806               informat AGEHHMEMCAT11 best32. ;
+807               informat AGEHHMEMCAT12 best32. ;
+808               informat AGEHHMEMCAT13 best32. ;
+809               informat AGEHHMEMCAT14 best32. ;
+810               informat HBUSNESS best32. ;
+811               informat ATHOME best32. ;
+812               informat TELLWORK best32. ;
+813               informat TELLDAYS best32. ;
+814               informat OTHWORK best32. ;
+815               informat WORKPAY best32. ;
+816               informat RETIREPY best32. ;
+817               informat SSINCOME best32. ;
+818               informat CASHBEN best32. ;
+819               informat INVESTMT best32. ;
+820               informat RGLRPAY best32. ;
+821               informat MONEYPY best32. ;
+822               informat POVERTY100 best32. ;
+823               informat POVERTY150 best32. ;
+824               informat HUPROJ best32. ;
+825               informat RENTHELP best32. ;
+826               informat FOODASST best32. ;
+827               informat ZHHSEX best32. ;
+828               informat ZHHAGE best32. ;
+829               informat ZEMPLOYHH best32. ;
+830               informat ZSPOUSE best32. ;
+831               informat ZSDESCENT best32. ;
+832               informat ZHouseholder_Race best32. ;
+833               informat ZEDUCATION best32. ;
+16                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+834               informat ZNHSLDMEM best32. ;
+835               informat ZAGEHHMEMCAT2 best32. ;
+836               informat ZAGEHHMEMCAT3 best32. ;
+837               informat ZAGEHHMEMCAT4 best32. ;
+838               informat ZAGEHHMEMCAT5 best32. ;
+839               informat ZAGEHHMEMCAT6 best32. ;
+840               informat ZAGEHHMEMCAT7 best32. ;
+841               informat ZAGEHHMEMCAT8 best32. ;
+842               informat ZAGEHHMEMCAT9 best32. ;
+843               informat ZAGEHHMEMCAT10 best32. ;
+844               informat ZAGEHHMEMCAT11 best32. ;
+845               informat ZAGEHHMEMCAT12 best32. ;
+846               informat ZAGEHHMEMCAT13 best32. ;
+847               informat ZAGEHHMEMCAT14 best32. ;
+848               informat ZHBUSNESS best32. ;
+849               informat ZATHOME best32. ;
+850               informat ZTELLWORK best32. ;
+851               informat ZTELLDAYS best32. ;
+852               informat ZOTHWORK best32. ;
+853               informat ZWORKPAY best32. ;
+854               informat ZRETIREPY best32. ;
+855               informat ZSSINCOME best32. ;
+856               informat ZCASHBEN best32. ;
+857               informat ZINVESTMT best32. ;
+858               informat ZRGLRPAY best32. ;
+859               informat ZMONEYPY best32. ;
+860               informat ZHUPROJ best32. ;
+861               informat ZRENTHELP best32. ;
+862               informat ZFOODASST best32. ;
+863               informat TOTSQFT best32. ;
+864               informat TOTSQFT_EN best32. ;
+865               informat TOTHSQFT best32. ;
+866               informat TOTUSQFT best32. ;
+867               informat TOTCSQFT best32. ;
+868               informat TOTUCSQFT best32. ;
+869               informat ZTOTSQFT best32. ;
+870               informat ZTOTSQFT_EN best32. ;
+871               informat ZTOTHSQFT best32. ;
+872               informat ZTOTUSQFT best32. ;
+873               informat ZTOTCSQFT best32. ;
+874               informat ZTOTUCSQFT best32. ;
+875               informat KWH best32. ;
+876               informat KWHSPH best32. ;
+877               informat KWHCOL best32. ;
+878               informat KWHWTH best32. ;
+879               informat KWHRFG best32. ;
+880               informat KWHOTH best32. ;
+881               informat BTUEL best32. ;
+882               informat BTUELSPH best32. ;
+883               informat BTUELCOL best32. ;
+884               informat BTUELWTH best32. ;
+885               informat BTUELRFG best32. ;
+886               informat BTUELOTH best32. ;
+887               informat DOLLAREL best32. ;
+888               informat DOLELSPH best32. ;
+889               informat DOLELCOL best32. ;
+890               informat DOLELWTH best32. ;
+891               informat DOLELRFG best32. ;
+17                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+892               informat DOLELOTH best32. ;
+893               informat CUFEETNG best32. ;
+894               informat CUFEETNGSPH best32. ;
+895               informat CUFEETNGWTH best32. ;
+896               informat CUFEETNGOTH best32. ;
+897               informat BTUNG best32. ;
+898               informat BTUNGSPH best32. ;
+899               informat BTUNGWTH best32. ;
+900               informat BTUNGOTH best32. ;
+901               informat DOLLARNG best32. ;
+902               informat DOLNGSPH best32. ;
+903               informat DOLNGWTH best32. ;
+904               informat DOLNGOTH best32. ;
+905               informat GALLONLP best32. ;
+906               informat GALLONLPSPH best32. ;
+907               informat GALLONLPWTH best32. ;
+908               informat GALLONLPOTH best32. ;
+909               informat BTULP best32. ;
+910               informat BTULPSPH best32. ;
+911               informat BTULPWTH best32. ;
+912               informat BTULPOTH best32. ;
+913               informat DOLLARLP best32. ;
+914               informat DOLLPSPH best32. ;
+915               informat DOLLPWTH best32. ;
+916               informat DOLLPOTH best32. ;
+917               informat GALLONFO best32. ;
+918               informat GALLONFOSPH best32. ;
+919               informat GALLONFOWTH best32. ;
+920               informat GALLONFOOTH best32. ;
+921               informat BTUFO best32. ;
+922               informat BTUFOSPH best32. ;
+923               informat BTUFOWTH best32. ;
+924               informat BTUFOOTH best32. ;
+925               informat DOLLARFO best32. ;
+926               informat DOLFOSPH best32. ;
+927               informat DOLFOWTH best32. ;
+928               informat DOLFOOTH best32. ;
+929               informat GALLONKER best32. ;
+930               informat GALLONKERSPH best32. ;
+931               informat GALLONKERWTH best32. ;
+932               informat GALLONKEROTH best32. ;
+933               informat BTUKER best32. ;
+934               informat BTUKERSPH best32. ;
+935               informat BTUKERWTH best32. ;
+936               informat BTUKEROTH best32. ;
+937               informat DOLLARKER best32. ;
+938               informat DOLKERSPH best32. ;
+939               informat DOLKERWTH best32. ;
+940               informat DOLKEROTH best32. ;
+941               informat BTUWOOD best32. ;
+942               informat CORDSWD best32. ;
+943               informat TOTALBTU best32. ;
+944               informat TOTALBTUSPH best32. ;
+945               informat TOTALBTUCOL best32. ;
+946               informat TOTALBTUWTH best32. ;
+947               informat TOTALBTURFG best32. ;
+948               informat TOTALBTUOTH best32. ;
+949               informat TOTALDOL best32. ;
+18                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+950               informat TOTALDOLSPH best32. ;
+951               informat TOTALDOLCOL best32. ;
+952               informat TOTALDOLWTH best32. ;
+953               informat TOTALDOLRFG best32. ;
+954               informat TOTALDOLOTH best32. ;
+955               informat KAVALEL best32. ;
+956               informat PERIODEL best32. ;
+957               informat SCALEEL best32. ;
+958               informat KAVALNG best32. ;
+959               informat PERIODNG best32. ;
+960               informat SCALENG best32. ;
+961               informat PERIODLP best32. ;
+962               informat SCALELP best32. ;
+963               informat PERIODFO best32. ;
+964               informat SCALEFO best32. ;
+965               informat PERIODKR best32. ;
+966               informat SCALEKER best32. ;
+967               informat IECC_Climate_Pub $7. ;
+968               informat HDD50 best32. ;
+969               informat CDD80 best32. ;
+970               informat GND_HDD65 best32. ;
+971               informat WSF best32. ;
+972               informat OA_LAT best32. ;
+973               informat GWT best32. ;
+974               informat DesignDBT99 best32. ;
+975               informat DesignDBT1 best32. ;
+976               format DOEID best12. ;
+977               format REGIONC best12. ;
+978               format DIVISION best12. ;
+979               format REPORTABLE_DOMAIN best12. ;
+980               format TYPEHUQ best12. ;
+981               format NWEIGHT best12. ;
+982               format HDD65 best12. ;
+983               format CDD65 best12. ;
+984               format HDD30YR best12. ;
+985               format CDD30YR best12. ;
+986               format Climate_Region_Pub best12. ;
+987               format AIA_Zone best12. ;
+988               format METROMICRO $7. ;
+989               format UR $3. ;
+990               format KOWNRENT best12. ;
+991               format CONDCOOP best12. ;
+992               format YEARMADE best12. ;
+993               format YEARMADERANGE best12. ;
+994               format OCCUPYYRANGE best12. ;
+995               format CONVERSION best12. ;
+996               format ORIG1FAM best12. ;
+997               format LOOKLIKE best12. ;
+998               format NUMFLRS best12. ;
+999               format NUMAPTS best12. ;
+1000              format WALLTYPE best12. ;
+1001              format ROOFTYPE best12. ;
+1002              format STUDIO best12. ;
+1003              format NAPTFLRS best12. ;
+1004              format STORIES best12. ;
+1005              format TYPEHUQ4 best12. ;
+1006              format BEDROOMS best12. ;
+1007              format NCOMBATH best12. ;
+19                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1008              format NHAFBATH best12. ;
+1009              format OTHROOMS best12. ;
+1010              format TOTROOMS best12. ;
+1011              format CELLAR best12. ;
+1012              format CRAWL best12. ;
+1013              format CONCRETE best12. ;
+1014              format BASEFIN best12. ;
+1015              format FINBASERMS best12. ;
+1016              format BASEHEAT best12. ;
+1017              format BASEHT2 best12. ;
+1018              format PCTBSTHT best12. ;
+1019              format BASECOOL best12. ;
+1020              format BASECL2 best12. ;
+1021              format PCTBSTCL best12. ;
+1022              format BASEUSE best12. ;
+1023              format ATTIC best12. ;
+1024              format ATTICFIN best12. ;
+1025              format FINATTRMS best12. ;
+1026              format ATTCHEAT best12. ;
+1027              format ATTCHT2 best12. ;
+1028              format PCTATTHT best12. ;
+1029              format ATTCCOOL best12. ;
+1030              format ATTCCL2 best12. ;
+1031              format PCTATTCL best12. ;
+1032              format ATTICUSE best12. ;
+1033              format PRKGPLC1 best12. ;
+1034              format SIZEOFGARAGE best12. ;
+1035              format GARGLOC best12. ;
+1036              format GARGHEAT best12. ;
+1037              format GARGCOOL best12. ;
+1038              format PRKGPLC2 best12. ;
+1039              format SIZEOFDETACH best12. ;
+1040              format OUTLET best12. ;
+1041              format ZKOWNRENT best12. ;
+1042              format ZCONDCOOP best12. ;
+1043              format ZYEARMADE best12. ;
+1044              format ZYEARMADERANGE best12. ;
+1045              format ZOCCUPYYRANGE best12. ;
+1046              format ZCONVERSION best12. ;
+1047              format ZORIG1FAM best12. ;
+1048              format ZLOOKLIKE best12. ;
+1049              format ZNUMFLRS best12. ;
+1050              format ZNUMAPTS best12. ;
+1051              format ZWALLTYPE best12. ;
+1052              format ZROOFTYPE best12. ;
+1053              format ZSTUDIO best12. ;
+1054              format ZNAPTFLRS best12. ;
+1055              format ZSTORIES best12. ;
+1056              format ZTYPEHUQ4 best12. ;
+1057              format ZBEDROOMS best12. ;
+1058              format ZNCOMBATH best12. ;
+1059              format ZNHAFBATH best12. ;
+1060              format ZOTHROOMS best12. ;
+1061              format ZCELLAR best12. ;
+1062              format ZCRAWL best12. ;
+1063              format ZCONCRETE best12. ;
+1064              format ZBASEFIN best12. ;
+1065              format ZFINBASERMS best12. ;
+20                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1066              format ZBASEHEAT best12. ;
+1067              format ZBASEHT2 best12. ;
+1068              format ZPCTBSTHT best12. ;
+1069              format ZBASECOOL best12. ;
+1070              format ZBASECL2 best12. ;
+1071              format ZPCTBSTCL best12. ;
+1072              format ZBASEUSE best12. ;
+1073              format ZATTIC best12. ;
+1074              format ZATTICFIN best12. ;
+1075              format ZFINATTRMS best12. ;
+1076              format ZATTCHEAT best12. ;
+1077              format ZATTCHT2 best12. ;
+1078              format ZPCTATTHT best12. ;
+1079              format ZATTCCOOL best12. ;
+1080              format ZPCTATTCL best12. ;
+1081              format ZATTCCL2 best12. ;
+1082              format ZATTICUSE best12. ;
+1083              format ZPRKGPLC1 best12. ;
+1084              format ZSIZEOFGARAGE best12. ;
+1085              format ZGARGLOC best12. ;
+1086              format ZGARGHEAT best12. ;
+1087              format ZGARGCOOL best12. ;
+1088              format ZPRKGPLC2 best12. ;
+1089              format ZSIZEOFDETACH best12. ;
+1090              format STOVEN best12. ;
+1091              format STOVENFUEL best12. ;
+1092              format STOVE best12. ;
+1093              format STOVEFUEL best12. ;
+1094              format OVEN best12. ;
+1095              format OVENFUEL best12. ;
+1096              format OVENUSE best12. ;
+1097              format OVENCLN best12. ;
+1098              format TYPECLN best12. ;
+1099              format MICRO best12. ;
+1100              format AMTMICRO best12. ;
+1101              format DEFROST best12. ;
+1102              format OUTGRILL best12. ;
+1103              format OUTGRILLFUEL best12. ;
+1104              format TOPGRILL best12. ;
+1105              format STGRILA best12. ;
+1106              format TOASTER best12. ;
+1107              format NUMMEAL best12. ;
+1108              format FUELFOOD best12. ;
+1109              format COFFEE best12. ;
+1110              format NUMFRIG best12. ;
+1111              format TYPERFR1 best12. ;
+1112              format SIZRFRI1 best12. ;
+1113              format REFRIGT1 best12. ;
+1114              format ICE best12. ;
+1115              format AGERFRI1 best12. ;
+1116              format ESFRIG best12. ;
+1117              format REPLCFRI best12. ;
+1118              format HELPFRI best12. ;
+1119              format HELPFRIY best12. ;
+1120              format TYPERFR2 best12. ;
+1121              format SIZRFRI2 best12. ;
+1122              format REFRIGT2 best12. ;
+1123              format MONRFRI2 best12. ;
+21                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1124              format AGERFRI2 best12. ;
+1125              format ESFRIG2 best12. ;
+1126              format TYPERFR3 best12. ;
+1127              format SIZRFRI3 best12. ;
+1128              format REFRIGT3 best12. ;
+1129              format MONRFRI3 best12. ;
+1130              format AGERFRI3 best12. ;
+1131              format ESFRIG3 best12. ;
+1132              format SEPFREEZ best12. ;
+1133              format NUMFREEZ best12. ;
+1134              format UPRTFRZR best12. ;
+1135              format SIZFREEZ best12. ;
+1136              format FREEZER best12. ;
+1137              format AGEFRZR best12. ;
+1138              format REPLCFRZ best12. ;
+1139              format HELPFRZ best12. ;
+1140              format HELPFRZY best12. ;
+1141              format UPRTFRZR2 best12. ;
+1142              format SIZFREEZ2 best12. ;
+1143              format FREEZER2 best12. ;
+1144              format AGEFRZR2 best12. ;
+1145              format DISHWASH best12. ;
+1146              format DWASHUSE best12. ;
+1147              format AGEDW best12. ;
+1148              format ESDISHW best12. ;
+1149              format REPLCDW best12. ;
+1150              format HELPDW best12. ;
+1151              format HELPDWY best12. ;
+1152              format ZSTOVEN best12. ;
+1153              format ZSTOVENFUEL best12. ;
+1154              format ZSTOVE best12. ;
+1155              format ZSTOVEFUEL best12. ;
+1156              format ZOVEN best12. ;
+1157              format ZOVENFUEL best12. ;
+1158              format ZOVENUSE best12. ;
+1159              format ZOVENCLN best12. ;
+1160              format ZTYPECLN best12. ;
+1161              format ZMICRO best12. ;
+1162              format ZAMTMICRO best12. ;
+1163              format ZDEFROST best12. ;
+1164              format ZOUTGRILL best12. ;
+1165              format ZOUTGRILLFUEL best12. ;
+1166              format ZTOPGRILL best12. ;
+1167              format ZSTGRILA best12. ;
+1168              format ZTOASTER best12. ;
+1169              format ZNUMMEAL best12. ;
+1170              format ZFUELFOOD best12. ;
+1171              format ZCOFFEE best12. ;
+1172              format ZNUMFRIG best12. ;
+1173              format ZTYPERFR1 best12. ;
+1174              format ZSIZRFRI1 best12. ;
+1175              format ZREFRIGT1 best12. ;
+1176              format ZICE best12. ;
+1177              format ZAGERFRI1 best12. ;
+1178              format ZTYPERFR2 best12. ;
+1179              format ZSIZRFRI2 best12. ;
+1180              format ZREFRIGT2 best12. ;
+1181              format ZMONRFRI2 best12. ;
+22                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1182              format ZAGERFRI2 best12. ;
+1183              format ZTYPERFR3 best12. ;
+1184              format ZSIZRFRI3 best12. ;
+1185              format ZREFRIGT3 best12. ;
+1186              format ZMONRFRI3 best12. ;
+1187              format ZAGERFRI3 best12. ;
+1188              format ZSEPFREEZ best12. ;
+1189              format ZNUMFREEZ best12. ;
+1190              format ZUPRTFRZR best12. ;
+1191              format ZSIZFREEZ best12. ;
+1192              format ZFREEZER best12. ;
+1193              format ZAGEFRZR best12. ;
+1194              format ZUPRTFRZR2 best12. ;
+1195              format ZSIZFREEZ2 best12. ;
+1196              format ZFREEZER2 best12. ;
+1197              format ZAGEFRZR2 best12. ;
+1198              format ZDISHWASH best12. ;
+1199              format ZDWASHUSE best12. ;
+1200              format ZAGEDW best12. ;
+1201              format CWASHER best12. ;
+1202              format TOPFRONT best12. ;
+1203              format WASHLOAD best12. ;
+1204              format WASHTEMP best12. ;
+1205              format RNSETEMP best12. ;
+1206              format AGECWASH best12. ;
+1207              format ESCWASH best12. ;
+1208              format REPLCCW best12. ;
+1209              format HELPCW best12. ;
+1210              format HELPCWY best12. ;
+1211              format DRYER best12. ;
+1212              format DRYRFUEL best12. ;
+1213              format DRYRUSE best12. ;
+1214              format AGECDRYER best12. ;
+1215              format TVCOLOR best12. ;
+1216              format TVSIZE1 best12. ;
+1217              format TVTYPE1 best12. ;
+1218              format CABLESAT1 best12. ;
+1219              format COMBODVR1 best12. ;
+1220              format DVR1 best12. ;
+1221              format DIGITSTB1 best12. ;
+1222              format PLAYSTA1 best12. ;
+1223              format COMBOVCRDVD1 best12. ;
+1224              format VCR1 best12. ;
+1225              format DVD1 best12. ;
+1226              format TVAUDIOSYS1 best12. ;
+1227              format OTHERSTB1 best12. ;
+1228              format TVONWD1 best12. ;
+1229              format TVONWDWATCH1 best12. ;
+1230              format TVONWE1 best12. ;
+1231              format TVONWEWATCH1 best12. ;
+1232              format TVSIZE2 best12. ;
+1233              format TVTYPE2 best12. ;
+1234              format CABLESAT2 best12. ;
+1235              format COMBODVR2 best12. ;
+1236              format DVR2 best12. ;
+1237              format DIGITSTB2 best12. ;
+1238              format PLAYSTA2 best12. ;
+1239              format COMBOVCRDVD2 best12. ;
+23                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1240              format VCR2 best12. ;
+1241              format DVD2 best12. ;
+1242              format TVAUDIOSYS2 best12. ;
+1243              format OTHERSTB2 best12. ;
+1244              format TVONWD2 best12. ;
+1245              format TVONWDWATCH2 best12. ;
+1246              format TVONWE2 best12. ;
+1247              format TVONWEWATCH2 best12. ;
+1248              format TVSIZE3 best12. ;
+1249              format TVTYPE3 best12. ;
+1250              format CABLESAT3 best12. ;
+1251              format COMBODVR3 best12. ;
+1252              format DVR3 best12. ;
+1253              format DIGITSTB3 best12. ;
+1254              format PLAYSTA3 best12. ;
+1255              format COMBOVCRDVD3 best12. ;
+1256              format VCR3 best12. ;
+1257              format DVD3 best12. ;
+1258              format TVAUDIOSYS3 best12. ;
+1259              format OTHERSTB3 best12. ;
+1260              format TVONWD3 best12. ;
+1261              format TVONWDWATCH3 best12. ;
+1262              format TVONWE3 best12. ;
+1263              format TVONWEWATCH3 best12. ;
+1264              format COMPUTER best12. ;
+1265              format NUMPC best12. ;
+1266              format PCTYPE1 best12. ;
+1267              format MONITOR1 best12. ;
+1268              format TIMEON1 best12. ;
+1269              format PCONOFF1 best12. ;
+1270              format PCSLEEP1 best12. ;
+1271              format PCTYPE2 best12. ;
+1272              format MONITOR2 best12. ;
+1273              format TIMEON2 best12. ;
+1274              format PCONOFF2 best12. ;
+1275              format PCSLEEP2 best12. ;
+1276              format PCTYPE3 best12. ;
+1277              format MONITOR3 best12. ;
+1278              format TIMEON3 best12. ;
+1279              format PCONOFF3 best12. ;
+1280              format PCSLEEP3 best12. ;
+1281              format INTERNET best12. ;
+1282              format INDIALUP best12. ;
+1283              format INDSL best12. ;
+1284              format INCABLE best12. ;
+1285              format INSATEL best12. ;
+1286              format INWIRELESS best12. ;
+1287              format PCPRINT best12. ;
+1288              format FAX best12. ;
+1289              format COPIER best12. ;
+1290              format WELLPUMP best12. ;
+1291              format DIPSTICK best12. ;
+1292              format SWAMPCOL best12. ;
+1293              format AQUARIUM best12. ;
+1294              format STEREO best12. ;
+1295              format NOCORD best12. ;
+1296              format ANSMACH best12. ;
+1297              format BATTOOLS best12. ;
+24                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1298              format BATCHRG best12. ;
+1299              format CHRGPLGT best12. ;
+1300              format ELECDEV best12. ;
+1301              format ELECCHRG best12. ;
+1302              format CHRGPLGE best12. ;
+1303              format ZCWASHER best12. ;
+1304              format ZTOPFRONT best12. ;
+1305              format ZWASHLOAD best12. ;
+1306              format ZWASHTEMP best12. ;
+1307              format ZRNSETEMP best12. ;
+1308              format ZAGECWASH best12. ;
+1309              format ZDRYER best12. ;
+1310              format ZDRYRFUEL best12. ;
+1311              format ZDRYRUSE best12. ;
+1312              format ZAGECDRYER best12. ;
+1313              format ZTVCOLOR best12. ;
+1314              format ZTVSIZE1 best12. ;
+1315              format ZTVTYPE1 best12. ;
+1316              format ZCABLESAT1 best12. ;
+1317              format ZCOMBODVR1 best12. ;
+1318              format ZDVR1 best12. ;
+1319              format ZDIGITSTB1 best12. ;
+1320              format ZPLAYSTA1 best12. ;
+1321              format ZCOMBOVCRDVD1 best12. ;
+1322              format ZVCR1 best12. ;
+1323              format ZDVD1 best12. ;
+1324              format ZTVAUDIOSYS1 best12. ;
+1325              format ZOTHERSTB1 best12. ;
+1326              format ZTVONWD1 best12. ;
+1327              format ZTVONWDWATCH1 best12. ;
+1328              format ZTVONWE1 best12. ;
+1329              format ZTVONWEWATCH1 best12. ;
+1330              format ZTVSIZE2 best12. ;
+1331              format ZTVTYPE2 best12. ;
+1332              format ZCABLESAT2 best12. ;
+1333              format ZCOMBODVR2 best12. ;
+1334              format ZDVR2 best12. ;
+1335              format ZDIGITSTB2 best12. ;
+1336              format ZPLAYSTA2 best12. ;
+1337              format ZCOMBOVCRDVD2 best12. ;
+1338              format ZVCR2 best12. ;
+1339              format ZDVD2 best12. ;
+1340              format ZTVAUDIOSYS2 best12. ;
+1341              format ZOTHERSTB2 best12. ;
+1342              format ZTVONWD2 best12. ;
+1343              format ZTVONWDWATCH2 best12. ;
+1344              format ZTVONWE2 best12. ;
+1345              format ZTVONWEWATCH2 best12. ;
+1346              format ZTVSIZE3 best12. ;
+1347              format ZTVTYPE3 best12. ;
+1348              format ZCABLESAT3 best12. ;
+1349              format ZCOMBODVR3 best12. ;
+1350              format ZDVR3 best12. ;
+1351              format ZDIGITSTB3 best12. ;
+1352              format ZPLAYSTA3 best12. ;
+1353              format ZCOMBOVCRDVD3 best12. ;
+1354              format ZVCR3 best12. ;
+1355              format ZDVD3 best12. ;
+25                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1356              format ZTVAUDIOSYS3 best12. ;
+1357              format ZOTHERSTB3 best12. ;
+1358              format ZTVONWD3 best12. ;
+1359              format ZTVONWDWATCH3 best12. ;
+1360              format ZTVONWE3 best12. ;
+1361              format ZTVONWEWATCH3 best12. ;
+1362              format ZCOMPUTER best12. ;
+1363              format ZNUMPC best12. ;
+1364              format ZPCTYPE1 best12. ;
+1365              format ZMONITOR1 best12. ;
+1366              format ZTIMEON1 best12. ;
+1367              format ZPCONOFF1 best12. ;
+1368              format ZPCSLEEP1 best12. ;
+1369              format ZPCTYPE2 best12. ;
+1370              format ZMONITOR2 best12. ;
+1371              format ZTIMEON2 best12. ;
+1372              format ZPCONOFF2 best12. ;
+1373              format ZPCSLEEP2 best12. ;
+1374              format ZPCTYPE3 best12. ;
+1375              format ZMONITOR3 best12. ;
+1376              format ZTIMEON3 best12. ;
+1377              format ZPCONOFF3 best12. ;
+1378              format ZPCSLEEP3 best12. ;
+1379              format ZINTERNET best12. ;
+1380              format ZINDIALUP best12. ;
+1381              format ZINDSL best12. ;
+1382              format ZINCABLE best12. ;
+1383              format ZINSATEL best12. ;
+1384              format ZINWIRELESS best12. ;
+1385              format ZPCPRINT best12. ;
+1386              format ZFAX best12. ;
+1387              format ZCOPIER best12. ;
+1388              format ZWELLPUMP best12. ;
+1389              format ZDIPSTICK best12. ;
+1390              format ZSWAMPCOL best12. ;
+1391              format ZAQUARIUM best12. ;
+1392              format ZSTEREO best12. ;
+1393              format ZNOCORD best12. ;
+1394              format ZANSMACH best12. ;
+1395              format ZBATTOOLS best12. ;
+1396              format ZBATCHRG best12. ;
+1397              format ZCHRGPLGT best12. ;
+1398              format ZELECDEV best12. ;
+1399              format ZELECCHRG best12. ;
+1400              format ZCHRGPLGE best12. ;
+1401              format HEATHOME best12. ;
+1402              format DNTHEAT best12. ;
+1403              format EQUIPNOHEAT best12. ;
+1404              format FUELNOHEAT best12. ;
+1405              format EQUIPM best12. ;
+1406              format FUELHEAT best12. ;
+1407              format MAINTHT best12. ;
+1408              format EQUIPAGE best12. ;
+1409              format REPLCHT best12. ;
+1410              format HELPHT best12. ;
+1411              format HELPHTY best12. ;
+1412              format HEATOTH best12. ;
+1413              format EQUIPAUX best12. ;
+26                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1414              format REVERSE best12. ;
+1415              format WARMAIR best12. ;
+1416              format FURNFUEL best12. ;
+1417              format STEAMR best12. ;
+1418              format RADFUEL best12. ;
+1419              format PERMELEC best12. ;
+1420              format PIPELESS best12. ;
+1421              format PIPEFUEL best12. ;
+1422              format ROOMHEAT best12. ;
+1423              format RMHTFUEL best12. ;
+1424              format WOODKILN best12. ;
+1425              format HSFUEL best12. ;
+1426              format CARRYEL best12. ;
+1427              format CARRYKER best12. ;
+1428              format CHIMNEY best12. ;
+1429              format FPFUEL best12. ;
+1430              format NGFPFLUE best12. ;
+1431              format USENGFP best12. ;
+1432              format RANGE best12. ;
+1433              format RNGFUEL best12. ;
+1434              format DIFEQUIP best12. ;
+1435              format DIFFUEL best12. ;
+1436              format EQMAMT best12. ;
+1437              format HEATROOM best12. ;
+1438              format THERMAIN best12. ;
+1439              format NUMTHERM best12. ;
+1440              format PROTHERM best12. ;
+1441              format AUTOHEATNITE best12. ;
+1442              format AUTOHEATDAY best12. ;
+1443              format TEMPHOME best12. ;
+1444              format TEMPGONE best12. ;
+1445              format TEMPNITE best12. ;
+1446              format MOISTURE best12. ;
+1447              format USEMOISTURE best12. ;
+1448              format ZHEATHOME best12. ;
+1449              format ZDNTHEAT best12. ;
+1450              format ZEQUIPNOHEAT best12. ;
+1451              format ZFUELNOHEAT best12. ;
+1452              format ZEQUIPM best12. ;
+1453              format ZFUELHEAT best12. ;
+1454              format ZMAINTHT best12. ;
+1455              format ZEQUIPAGE best12. ;
+1456              format ZHEATOTH best12. ;
+1457              format ZFURNFUEL best12. ;
+1458              format ZRADFUEL best12. ;
+1459              format ZPIPEFUEL best12. ;
+1460              format ZRMHTFUEL best12. ;
+1461              format ZHSFUEL best12. ;
+1462              format ZFPFUEL best12. ;
+1463              format ZNGFPFLUE best12. ;
+1464              format ZUSENGFP best12. ;
+1465              format ZRNGFUEL best12. ;
+1466              format ZDIFFUEL best12. ;
+1467              format ZEQMAMT best12. ;
+1468              format ZHEATROOM best12. ;
+1469              format ZTHERMAIN best12. ;
+1470              format ZNUMTHERM best12. ;
+1471              format ZPROTHERM best12. ;
+27                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1472              format ZAUTOHEATNITE best12. ;
+1473              format ZAUTOHEATDAY best12. ;
+1474              format ZTEMPHOME best12. ;
+1475              format ZTEMPGONE best12. ;
+1476              format ZTEMPNITE best12. ;
+1477              format ZMOISTURE best12. ;
+1478              format ZUSEMOISTURE best12. ;
+1479              format NUMH2ONOTNK best12. ;
+1480              format NUMH2OHTRS best12. ;
+1481              format H2OTYPE1 best12. ;
+1482              format FUELH2O best12. ;
+1483              format WHEATOTH best12. ;
+1484              format WHEATSIZ best12. ;
+1485              format WHEATAGE best12. ;
+1486              format WHEATBKT best12. ;
+1487              format HELPWH best12. ;
+1488              format HELPWHY best12. ;
+1489              format H2OTYPE2 best12. ;
+1490              format FUELH2O2 best12. ;
+1491              format WHEATSIZ2 best12. ;
+1492              format WHEATAGE2 best12. ;
+1493              format ZNUMH2OHTRS best12. ;
+1494              format ZNUMH2ONOTNK best12. ;
+1495              format ZH2OTYPE1 best12. ;
+1496              format ZFUELH2O best12. ;
+1497              format ZWHEATOTH best12. ;
+1498              format ZWHEATSIZ best12. ;
+1499              format ZWHEATAGE best12. ;
+1500              format ZWHEATBKT best12. ;
+1501              format ZH2OTYPE2 best12. ;
+1502              format ZFUELH2O2 best12. ;
+1503              format ZWHEATSIZ2 best12. ;
+1504              format ZWHEATAGE2 best12. ;
+1505              format AIRCOND best12. ;
+1506              format DNTAC best12. ;
+1507              format COOLTYPENOAC best12. ;
+1508              format COOLTYPE best12. ;
+1509              format DUCTS best12. ;
+1510              format CENACHP best12. ;
+1511              format ACOTHERS best12. ;
+1512              format MAINTAC best12. ;
+1513              format AGECENAC best12. ;
+1514              format REPLCCAC best12. ;
+1515              format HELPCAC best12. ;
+1516              format HELPCACY best12. ;
+1517              format ACROOMS best12. ;
+1518              format USECENAC best12. ;
+1519              format THERMAINAC best12. ;
+1520              format PROTHERMAC best12. ;
+1521              format AUTOCOOLNITE best12. ;
+1522              format AUTOCOOLDAY best12. ;
+1523              format TEMPHOMEAC best12. ;
+1524              format TEMPGONEAC best12. ;
+1525              format TEMPNITEAC best12. ;
+1526              format NUMBERAC best12. ;
+1527              format WWACAGE best12. ;
+1528              format ESWWAC best12. ;
+1529              format REPLCWWAC best12. ;
+28                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1530              format HELPWWAC best12. ;
+1531              format HELPWWACY best12. ;
+1532              format USEWWAC best12. ;
+1533              format NUMCFAN best12. ;
+1534              format USECFAN best12. ;
+1535              format TREESHAD best12. ;
+1536              format NOTMOIST best12. ;
+1537              format USENOTMOIST best12. ;
+1538              format ZAIRCOND best12. ;
+1539              format ZDNTAC best12. ;
+1540              format ZCOOLTYPENOAC best12. ;
+1541              format ZCOOLTYPE best12. ;
+1542              format ZDUCTS best12. ;
+1543              format ZCENACHP best12. ;
+1544              format ZACOTHERS best12. ;
+1545              format ZMAINTAC best12. ;
+1546              format ZAGECENAC best12. ;
+1547              format ZUSECENAC best12. ;
+1548              format ZACROOMS best12. ;
+1549              format ZTHERMAINAC best12. ;
+1550              format ZPROTHERMAC best12. ;
+1551              format ZAUTOCOOLNITE best12. ;
+1552              format ZAUTOCOOLDAY best12. ;
+1553              format ZTEMPHOMEAC best12. ;
+1554              format ZTEMPGONEAC best12. ;
+1555              format ZTEMPNITEAC best12. ;
+1556              format ZNUMBERAC best12. ;
+1557              format ZWWACAGE best12. ;
+1558              format ZUSEWWAC best12. ;
+1559              format ZNUMCFAN best12. ;
+1560              format ZUSECFAN best12. ;
+1561              format ZTREESHAD best12. ;
+1562              format ZNOTMOIST best12. ;
+1563              format ZUSENOTMOIST best12. ;
+1564              format HIGHCEIL best12. ;
+1565              format CATHCEIL best12. ;
+1566              format SWIMPOOL best12. ;
+1567              format POOL best12. ;
+1568              format FUELPOOL best12. ;
+1569              format RECBATH best12. ;
+1570              format FUELTUB best12. ;
+1571              format LGT12 best12. ;
+1572              format LGT12EE best12. ;
+1573              format LGT4 best12. ;
+1574              format LGT4EE best12. ;
+1575              format LGT1 best12. ;
+1576              format LGT1EE best12. ;
+1577              format NOUTLGTNT best12. ;
+1578              format LGTOEE best12. ;
+1579              format NGASLIGHT best12. ;
+1580              format INSTLCFL best12. ;
+1581              format HELPCFL best12. ;
+1582              format HELPCFLY best12. ;
+1583              format SLDDRS best12. ;
+1584              format DOOR1SUM best12. ;
+1585              format WINDOWS best12. ;
+1586              format TYPEGLASS best12. ;
+1587              format NEWGLASS best12. ;
+29                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1588              format HELPWIN best12. ;
+1589              format HELPWINY best12. ;
+1590              format ADQINSUL best12. ;
+1591              format INSTLINS best12. ;
+1592              format AGEINS best12. ;
+1593              format HELPINS best12. ;
+1594              format HELPINSY best12. ;
+1595              format DRAFTY best12. ;
+1596              format INSTLWS best12. ;
+1597              format AGEWS best12. ;
+1598              format HELPWS best12. ;
+1599              format HELPWSY best12. ;
+1600              format AUDIT best12. ;
+1601              format AGEAUD best12. ;
+1602              format HELPAUD best12. ;
+1603              format HELPAUDY best12. ;
+1604              format ZHIGHCEIL best12. ;
+1605              format ZCATHCEIL best12. ;
+1606              format ZSWIMPOOL best12. ;
+1607              format ZPOOL best12. ;
+1608              format ZFUELPOOL best12. ;
+1609              format ZRECBATH best12. ;
+1610              format ZFUELTUB best12. ;
+1611              format ZLGT12 best12. ;
+1612              format ZLGT4 best12. ;
+1613              format ZLGT1 best12. ;
+1614              format ZNOUTLGTNT best12. ;
+1615              format ZNGASLIGHT best12. ;
+1616              format ZSLDDRS best12. ;
+1617              format ZDOOR1SUM best12. ;
+1618              format ZWINDOWS best12. ;
+1619              format ZTYPEGLASS best12. ;
+1620              format ZNEWGLASS best12. ;
+1621              format ZADQINSUL best12. ;
+1622              format ZINSTLINS best12. ;
+1623              format ZAGEINS best12. ;
+1624              format ZDRAFTY best12. ;
+1625              format ZINSTLWS best12. ;
+1626              format ZAGEWS best12. ;
+1627              format ZAUDIT best12. ;
+1628              format ZAGEAUD best12. ;
+1629              format USEEL best12. ;
+1630              format USENG best12. ;
+1631              format USELP best12. ;
+1632              format USEFO best12. ;
+1633              format USEKERO best12. ;
+1634              format USEWOOD best12. ;
+1635              format USESOLAR best12. ;
+1636              format USEOTH best12. ;
+1637              format ELWARM best12. ;
+1638              format ELECAUX best12. ;
+1639              format ELCOOL best12. ;
+1640              format ELWATER best12. ;
+1641              format ELFOOD best12. ;
+1642              format ELOTHER best12. ;
+1643              format UGWARM best12. ;
+1644              format UGASAUX best12. ;
+1645              format UGWATER best12. ;
+30                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1646              format UGCOOK best12. ;
+1647              format UGOTH best12. ;
+1648              format LPWARM best12. ;
+1649              format LPGAUX best12. ;
+1650              format LPWATER best12. ;
+1651              format LPCOOK best12. ;
+1652              format LPOTHER best12. ;
+1653              format FOWARM best12. ;
+1654              format FOILAUX best12. ;
+1655              format FOWATER best12. ;
+1656              format FOOTHER best12. ;
+1657              format KRWARM best12. ;
+1658              format KEROAUX best12. ;
+1659              format KRWATER best12. ;
+1660              format KROTHER best12. ;
+1661              format WDWARM best12. ;
+1662              format WOODAUX best12. ;
+1663              format WDWATER best12. ;
+1664              format WDOTHUSE best12. ;
+1665              format SOLWARM best12. ;
+1666              format SOLARAUX best12. ;
+1667              format SOLWATER best12. ;
+1668              format SOLOTHER best12. ;
+1669              format OTHWARM best12. ;
+1670              format OTHERAUX best12. ;
+1671              format OTHWATER best12. ;
+1672              format OTHCOOK best12. ;
+1673              format ONSITE best12. ;
+1674              format ONSITEGRID best12. ;
+1675              format PELHEAT best12. ;
+1676              format PELHOTWA best12. ;
+1677              format PELCOOK best12. ;
+1678              format PELAC best12. ;
+1679              format PELLIGHT best12. ;
+1680              format OTHERWAYEL best12. ;
+1681              format PGASHEAT best12. ;
+1682              format PGASHTWA best12. ;
+1683              format PUGCOOK best12. ;
+1684              format PUGOTH best12. ;
+1685              format OTHERWAYNG best12. ;
+1686              format FOPAY best12. ;
+1687              format OTHERWAYFO best12. ;
+1688              format LPGPAY best12. ;
+1689              format OTHERWAYLPG best12. ;
+1690              format LPGDELV best12. ;
+1691              format KERODEL best12. ;
+1692              format KEROCASH best12. ;
+1693              format NOCRCASH best12. ;
+1694              format NKRGALNC best12. ;
+1695              format WOODLOGS best12. ;
+1696              format WDSCRAP best12. ;
+1697              format WDPELLET best12. ;
+1698              format WDOTHER best12. ;
+1699              format WOODAMT best12. ;
+1700              format NUMCORDS best12. ;
+1701              format ZONSITE best12. ;
+1702              format ZONSITEGRID best12. ;
+1703              format ZPELHEAT best12. ;
+31                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1704              format ZPELHOTWA best12. ;
+1705              format ZPELCOOK best12. ;
+1706              format ZPELAC best12. ;
+1707              format ZPELLIGHT best12. ;
+1708              format ZOTHERWAYEL best12. ;
+1709              format ZPGASHEAT best12. ;
+1710              format ZPGASHTWA best12. ;
+1711              format ZPUGCOOK best12. ;
+1712              format ZPUGOTH best12. ;
+1713              format ZOTHERWAYNG best12. ;
+1714              format ZFOPAY best12. ;
+1715              format ZOTHERWAYFO best12. ;
+1716              format ZLPGPAY best12. ;
+1717              format ZOTHERWAYLPG best12. ;
+1718              format ZKERODEL best12. ;
+1719              format ZKEROCASH best12. ;
+1720              format ZNOCRCASH best12. ;
+1721              format ZNKRGALNC best12. ;
+1722              format ZWOODLOGS best12. ;
+1723              format ZWDSCRAP best12. ;
+1724              format ZWDPELLET best12. ;
+1725              format ZWDOTHER best12. ;
+1726              format ZWOODAMT best12. ;
+1727              format ZNUMCORDS best12. ;
+1728              format KFUELOT best12. ;
+1729              format HHSEX best12. ;
+1730              format EMPLOYHH best12. ;
+1731              format SPOUSE best12. ;
+1732              format SDESCENT best12. ;
+1733              format Householder_Race best12. ;
+1734              format EDUCATION best12. ;
+1735              format NHSLDMEM best12. ;
+1736              format HHAGE best12. ;
+1737              format AGEHHMEMCAT2 best12. ;
+1738              format AGEHHMEMCAT3 best12. ;
+1739              format AGEHHMEMCAT4 best12. ;
+1740              format AGEHHMEMCAT5 best12. ;
+1741              format AGEHHMEMCAT6 best12. ;
+1742              format AGEHHMEMCAT7 best12. ;
+1743              format AGEHHMEMCAT8 best12. ;
+1744              format AGEHHMEMCAT9 best12. ;
+1745              format AGEHHMEMCAT10 best12. ;
+1746              format AGEHHMEMCAT11 best12. ;
+1747              format AGEHHMEMCAT12 best12. ;
+1748              format AGEHHMEMCAT13 best12. ;
+1749              format AGEHHMEMCAT14 best12. ;
+1750              format HBUSNESS best12. ;
+1751              format ATHOME best12. ;
+1752              format TELLWORK best12. ;
+1753              format TELLDAYS best12. ;
+1754              format OTHWORK best12. ;
+1755              format WORKPAY best12. ;
+1756              format RETIREPY best12. ;
+1757              format SSINCOME best12. ;
+1758              format CASHBEN best12. ;
+1759              format INVESTMT best12. ;
+1760              format RGLRPAY best12. ;
+1761              format MONEYPY best12. ;
+32                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1762              format POVERTY100 best12. ;
+1763              format POVERTY150 best12. ;
+1764              format HUPROJ best12. ;
+1765              format RENTHELP best12. ;
+1766              format FOODASST best12. ;
+1767              format ZHHSEX best12. ;
+1768              format ZHHAGE best12. ;
+1769              format ZEMPLOYHH best12. ;
+1770              format ZSPOUSE best12. ;
+1771              format ZSDESCENT best12. ;
+1772              format ZHouseholder_Race best12. ;
+1773              format ZEDUCATION best12. ;
+1774              format ZNHSLDMEM best12. ;
+1775              format ZAGEHHMEMCAT2 best12. ;
+1776              format ZAGEHHMEMCAT3 best12. ;
+1777              format ZAGEHHMEMCAT4 best12. ;
+1778              format ZAGEHHMEMCAT5 best12. ;
+1779              format ZAGEHHMEMCAT6 best12. ;
+1780              format ZAGEHHMEMCAT7 best12. ;
+1781              format ZAGEHHMEMCAT8 best12. ;
+1782              format ZAGEHHMEMCAT9 best12. ;
+1783              format ZAGEHHMEMCAT10 best12. ;
+1784              format ZAGEHHMEMCAT11 best12. ;
+1785              format ZAGEHHMEMCAT12 best12. ;
+1786              format ZAGEHHMEMCAT13 best12. ;
+1787              format ZAGEHHMEMCAT14 best12. ;
+1788              format ZHBUSNESS best12. ;
+1789              format ZATHOME best12. ;
+1790              format ZTELLWORK best12. ;
+1791              format ZTELLDAYS best12. ;
+1792              format ZOTHWORK best12. ;
+1793              format ZWORKPAY best12. ;
+1794              format ZRETIREPY best12. ;
+1795              format ZSSINCOME best12. ;
+1796              format ZCASHBEN best12. ;
+1797              format ZINVESTMT best12. ;
+1798              format ZRGLRPAY best12. ;
+1799              format ZMONEYPY best12. ;
+1800              format ZHUPROJ best12. ;
+1801              format ZRENTHELP best12. ;
+1802              format ZFOODASST best12. ;
+1803              format TOTSQFT best12. ;
+1804              format TOTSQFT_EN best12. ;
+1805              format TOTHSQFT best12. ;
+1806              format TOTUSQFT best12. ;
+1807              format TOTCSQFT best12. ;
+1808              format TOTUCSQFT best12. ;
+1809              format ZTOTSQFT best12. ;
+1810              format ZTOTSQFT_EN best12. ;
+1811              format ZTOTHSQFT best12. ;
+1812              format ZTOTUSQFT best12. ;
+1813              format ZTOTCSQFT best12. ;
+1814              format ZTOTUCSQFT best12. ;
+1815              format KWH best12. ;
+1816              format KWHSPH best12. ;
+1817              format KWHCOL best12. ;
+1818              format KWHWTH best12. ;
+1819              format KWHRFG best12. ;
+33                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1820              format KWHOTH best12. ;
+1821              format BTUEL best12. ;
+1822              format BTUELSPH best12. ;
+1823              format BTUELCOL best12. ;
+1824              format BTUELWTH best12. ;
+1825              format BTUELRFG best12. ;
+1826              format BTUELOTH best12. ;
+1827              format DOLLAREL best12. ;
+1828              format DOLELSPH best12. ;
+1829              format DOLELCOL best12. ;
+1830              format DOLELWTH best12. ;
+1831              format DOLELRFG best12. ;
+1832              format DOLELOTH best12. ;
+1833              format CUFEETNG best12. ;
+1834              format CUFEETNGSPH best12. ;
+1835              format CUFEETNGWTH best12. ;
+1836              format CUFEETNGOTH best12. ;
+1837              format BTUNG best12. ;
+1838              format BTUNGSPH best12. ;
+1839              format BTUNGWTH best12. ;
+1840              format BTUNGOTH best12. ;
+1841              format DOLLARNG best12. ;
+1842              format DOLNGSPH best12. ;
+1843              format DOLNGWTH best12. ;
+1844              format DOLNGOTH best12. ;
+1845              format GALLONLP best12. ;
+1846              format GALLONLPSPH best12. ;
+1847              format GALLONLPWTH best12. ;
+1848              format GALLONLPOTH best12. ;
+1849              format BTULP best12. ;
+1850              format BTULPSPH best12. ;
+1851              format BTULPWTH best12. ;
+1852              format BTULPOTH best12. ;
+1853              format DOLLARLP best12. ;
+1854              format DOLLPSPH best12. ;
+1855              format DOLLPWTH best12. ;
+1856              format DOLLPOTH best12. ;
+1857              format GALLONFO best12. ;
+1858              format GALLONFOSPH best12. ;
+1859              format GALLONFOWTH best12. ;
+1860              format GALLONFOOTH best12. ;
+1861              format BTUFO best12. ;
+1862              format BTUFOSPH best12. ;
+1863              format BTUFOWTH best12. ;
+1864              format BTUFOOTH best12. ;
+1865              format DOLLARFO best12. ;
+1866              format DOLFOSPH best12. ;
+1867              format DOLFOWTH best12. ;
+1868              format DOLFOOTH best12. ;
+1869              format GALLONKER best12. ;
+1870              format GALLONKERSPH best12. ;
+1871              format GALLONKERWTH best12. ;
+1872              format GALLONKEROTH best12. ;
+1873              format BTUKER best12. ;
+1874              format BTUKERSPH best12. ;
+1875              format BTUKERWTH best12. ;
+1876              format BTUKEROTH best12. ;
+1877              format DOLLARKER best12. ;
+34                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1878              format DOLKERSPH best12. ;
+1879              format DOLKERWTH best12. ;
+1880              format DOLKEROTH best12. ;
+1881              format BTUWOOD best12. ;
+1882              format CORDSWD best12. ;
+1883              format TOTALBTU best12. ;
+1884              format TOTALBTUSPH best12. ;
+1885              format TOTALBTUCOL best12. ;
+1886              format TOTALBTUWTH best12. ;
+1887              format TOTALBTURFG best12. ;
+1888              format TOTALBTUOTH best12. ;
+1889              format TOTALDOL best12. ;
+1890              format TOTALDOLSPH best12. ;
+1891              format TOTALDOLCOL best12. ;
+1892              format TOTALDOLWTH best12. ;
+1893              format TOTALDOLRFG best12. ;
+1894              format TOTALDOLOTH best12. ;
+1895              format KAVALEL best12. ;
+1896              format PERIODEL best12. ;
+1897              format SCALEEL best12. ;
+1898              format KAVALNG best12. ;
+1899              format PERIODNG best12. ;
+1900              format SCALENG best12. ;
+1901              format PERIODLP best12. ;
+1902              format SCALELP best12. ;
+1903              format PERIODFO best12. ;
+1904              format SCALEFO best12. ;
+1905              format PERIODKR best12. ;
+1906              format SCALEKER best12. ;
+1907              format IECC_Climate_Pub $7. ;
+1908              format HDD50 best12. ;
+1909              format CDD80 best12. ;
+1910              format GND_HDD65 best12. ;
+1911              format WSF best12. ;
+1912              format OA_LAT best12. ;
+1913              format GWT best12. ;
+1914              format DesignDBT99 best12. ;
+1915              format DesignDBT1 best12. ;
+1916           input
+1917                       DOEID
+1918                       REGIONC
+1919                       DIVISION
+1920                       REPORTABLE_DOMAIN
+1921                       TYPEHUQ
+1922                       NWEIGHT
+1923                       HDD65
+1924                       CDD65
+1925                       HDD30YR
+1926                       CDD30YR
+1927                       Climate_Region_Pub
+1928                       AIA_Zone
+1929                       METROMICRO $
+1930                       UR $
+1931                       KOWNRENT
+1932                       CONDCOOP
+1933                       YEARMADE
+1934                       YEARMADERANGE
+1935                       OCCUPYYRANGE
+35                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1936                       CONVERSION
+1937                       ORIG1FAM
+1938                       LOOKLIKE
+1939                       NUMFLRS
+1940                       NUMAPTS
+1941                       WALLTYPE
+1942                       ROOFTYPE
+1943                       STUDIO
+1944                       NAPTFLRS
+1945                       STORIES
+1946                       TYPEHUQ4
+1947                       BEDROOMS
+1948                       NCOMBATH
+1949                       NHAFBATH
+1950                       OTHROOMS
+1951                       TOTROOMS
+1952                       CELLAR
+1953                       CRAWL
+1954                       CONCRETE
+1955                       BASEFIN
+1956                       FINBASERMS
+1957                       BASEHEAT
+1958                       BASEHT2
+1959                       PCTBSTHT
+1960                       BASECOOL
+1961                       BASECL2
+1962                       PCTBSTCL
+1963                       BASEUSE
+1964                       ATTIC
+1965                       ATTICFIN
+1966                       FINATTRMS
+1967                       ATTCHEAT
+1968                       ATTCHT2
+1969                       PCTATTHT
+1970                       ATTCCOOL
+1971                       ATTCCL2
+1972                       PCTATTCL
+1973                       ATTICUSE
+1974                       PRKGPLC1
+1975                       SIZEOFGARAGE
+1976                       GARGLOC
+1977                       GARGHEAT
+1978                       GARGCOOL
+1979                       PRKGPLC2
+1980                       SIZEOFDETACH
+1981                       OUTLET
+1982                       ZKOWNRENT
+1983                       ZCONDCOOP
+1984                       ZYEARMADE
+1985                       ZYEARMADERANGE
+1986                       ZOCCUPYYRANGE
+1987                       ZCONVERSION
+1988                       ZORIG1FAM
+1989                       ZLOOKLIKE
+1990                       ZNUMFLRS
+1991                       ZNUMAPTS
+1992                       ZWALLTYPE
+1993                       ZROOFTYPE
+36                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+1994                       ZSTUDIO
+1995                       ZNAPTFLRS
+1996                       ZSTORIES
+1997                       ZTYPEHUQ4
+1998                       ZBEDROOMS
+1999                       ZNCOMBATH
+2000                       ZNHAFBATH
+2001                       ZOTHROOMS
+2002                       ZCELLAR
+2003                       ZCRAWL
+2004                       ZCONCRETE
+2005                       ZBASEFIN
+2006                       ZFINBASERMS
+2007                       ZBASEHEAT
+2008                       ZBASEHT2
+2009                       ZPCTBSTHT
+2010                       ZBASECOOL
+2011                       ZBASECL2
+2012                       ZPCTBSTCL
+2013                       ZBASEUSE
+2014                       ZATTIC
+2015                       ZATTICFIN
+2016                       ZFINATTRMS
+2017                       ZATTCHEAT
+2018                       ZATTCHT2
+2019                       ZPCTATTHT
+2020                       ZATTCCOOL
+2021                       ZPCTATTCL
+2022                       ZATTCCL2
+2023                       ZATTICUSE
+2024                       ZPRKGPLC1
+2025                       ZSIZEOFGARAGE
+2026                       ZGARGLOC
+2027                       ZGARGHEAT
+2028                       ZGARGCOOL
+2029                       ZPRKGPLC2
+2030                       ZSIZEOFDETACH
+2031                       STOVEN
+2032                       STOVENFUEL
+2033                       STOVE
+2034                       STOVEFUEL
+2035                       OVEN
+2036                       OVENFUEL
+2037                       OVENUSE
+2038                       OVENCLN
+2039                       TYPECLN
+2040                       MICRO
+2041                       AMTMICRO
+2042                       DEFROST
+2043                       OUTGRILL
+2044                       OUTGRILLFUEL
+2045                       TOPGRILL
+2046                       STGRILA
+2047                       TOASTER
+2048                       NUMMEAL
+2049                       FUELFOOD
+2050                       COFFEE
+2051                       NUMFRIG
+37                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2052                       TYPERFR1
+2053                       SIZRFRI1
+2054                       REFRIGT1
+2055                       ICE
+2056                       AGERFRI1
+2057                       ESFRIG
+2058                       REPLCFRI
+2059                       HELPFRI
+2060                       HELPFRIY
+2061                       TYPERFR2
+2062                       SIZRFRI2
+2063                       REFRIGT2
+2064                       MONRFRI2
+2065                       AGERFRI2
+2066                       ESFRIG2
+2067                       TYPERFR3
+2068                       SIZRFRI3
+2069                       REFRIGT3
+2070                       MONRFRI3
+2071                       AGERFRI3
+2072                       ESFRIG3
+2073                       SEPFREEZ
+2074                       NUMFREEZ
+2075                       UPRTFRZR
+2076                       SIZFREEZ
+2077                       FREEZER
+2078                       AGEFRZR
+2079                       REPLCFRZ
+2080                       HELPFRZ
+2081                       HELPFRZY
+2082                       UPRTFRZR2
+2083                       SIZFREEZ2
+2084                       FREEZER2
+2085                       AGEFRZR2
+2086                       DISHWASH
+2087                       DWASHUSE
+2088                       AGEDW
+2089                       ESDISHW
+2090                       REPLCDW
+2091                       HELPDW
+2092                       HELPDWY
+2093                       ZSTOVEN
+2094                       ZSTOVENFUEL
+2095                       ZSTOVE
+2096                       ZSTOVEFUEL
+2097                       ZOVEN
+2098                       ZOVENFUEL
+2099                       ZOVENUSE
+2100                       ZOVENCLN
+2101                       ZTYPECLN
+2102                       ZMICRO
+2103                       ZAMTMICRO
+2104                       ZDEFROST
+2105                       ZOUTGRILL
+2106                       ZOUTGRILLFUEL
+2107                       ZTOPGRILL
+2108                       ZSTGRILA
+2109                       ZTOASTER
+38                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2110                       ZNUMMEAL
+2111                       ZFUELFOOD
+2112                       ZCOFFEE
+2113                       ZNUMFRIG
+2114                       ZTYPERFR1
+2115                       ZSIZRFRI1
+2116                       ZREFRIGT1
+2117                       ZICE
+2118                       ZAGERFRI1
+2119                       ZTYPERFR2
+2120                       ZSIZRFRI2
+2121                       ZREFRIGT2
+2122                       ZMONRFRI2
+2123                       ZAGERFRI2
+2124                       ZTYPERFR3
+2125                       ZSIZRFRI3
+2126                       ZREFRIGT3
+2127                       ZMONRFRI3
+2128                       ZAGERFRI3
+2129                       ZSEPFREEZ
+2130                       ZNUMFREEZ
+2131                       ZUPRTFRZR
+2132                       ZSIZFREEZ
+2133                       ZFREEZER
+2134                       ZAGEFRZR
+2135                       ZUPRTFRZR2
+2136                       ZSIZFREEZ2
+2137                       ZFREEZER2
+2138                       ZAGEFRZR2
+2139                       ZDISHWASH
+2140                       ZDWASHUSE
+2141                       ZAGEDW
+2142                       CWASHER
+2143                       TOPFRONT
+2144                       WASHLOAD
+2145                       WASHTEMP
+2146                       RNSETEMP
+2147                       AGECWASH
+2148                       ESCWASH
+2149                       REPLCCW
+2150                       HELPCW
+2151                       HELPCWY
+2152                       DRYER
+2153                       DRYRFUEL
+2154                       DRYRUSE
+2155                       AGECDRYER
+2156                       TVCOLOR
+2157                       TVSIZE1
+2158                       TVTYPE1
+2159                       CABLESAT1
+2160                       COMBODVR1
+2161                       DVR1
+2162                       DIGITSTB1
+2163                       PLAYSTA1
+2164                       COMBOVCRDVD1
+2165                       VCR1
+2166                       DVD1
+2167                       TVAUDIOSYS1
+39                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2168                       OTHERSTB1
+2169                       TVONWD1
+2170                       TVONWDWATCH1
+2171                       TVONWE1
+2172                       TVONWEWATCH1
+2173                       TVSIZE2
+2174                       TVTYPE2
+2175                       CABLESAT2
+2176                       COMBODVR2
+2177                       DVR2
+2178                       DIGITSTB2
+2179                       PLAYSTA2
+2180                       COMBOVCRDVD2
+2181                       VCR2
+2182                       DVD2
+2183                       TVAUDIOSYS2
+2184                       OTHERSTB2
+2185                       TVONWD2
+2186                       TVONWDWATCH2
+2187                       TVONWE2
+2188                       TVONWEWATCH2
+2189                       TVSIZE3
+2190                       TVTYPE3
+2191                       CABLESAT3
+2192                       COMBODVR3
+2193                       DVR3
+2194                       DIGITSTB3
+2195                       PLAYSTA3
+2196                       COMBOVCRDVD3
+2197                       VCR3
+2198                       DVD3
+2199                       TVAUDIOSYS3
+2200                       OTHERSTB3
+2201                       TVONWD3
+2202                       TVONWDWATCH3
+2203                       TVONWE3
+2204                       TVONWEWATCH3
+2205                       COMPUTER
+2206                       NUMPC
+2207                       PCTYPE1
+2208                       MONITOR1
+2209                       TIMEON1
+2210                       PCONOFF1
+2211                       PCSLEEP1
+2212                       PCTYPE2
+2213                       MONITOR2
+2214                       TIMEON2
+2215                       PCONOFF2
+2216                       PCSLEEP2
+2217                       PCTYPE3
+2218                       MONITOR3
+2219                       TIMEON3
+2220                       PCONOFF3
+2221                       PCSLEEP3
+2222                       INTERNET
+2223                       INDIALUP
+2224                       INDSL
+2225                       INCABLE
+40                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2226                       INSATEL
+2227                       INWIRELESS
+2228                       PCPRINT
+2229                       FAX
+2230                       COPIER
+2231                       WELLPUMP
+2232                       DIPSTICK
+2233                       SWAMPCOL
+2234                       AQUARIUM
+2235                       STEREO
+2236                       NOCORD
+2237                       ANSMACH
+2238                       BATTOOLS
+2239                       BATCHRG
+2240                       CHRGPLGT
+2241                       ELECDEV
+2242                       ELECCHRG
+2243                       CHRGPLGE
+2244                       ZCWASHER
+2245                       ZTOPFRONT
+2246                       ZWASHLOAD
+2247                       ZWASHTEMP
+2248                       ZRNSETEMP
+2249                       ZAGECWASH
+2250                       ZDRYER
+2251                       ZDRYRFUEL
+2252                       ZDRYRUSE
+2253                       ZAGECDRYER
+2254                       ZTVCOLOR
+2255                       ZTVSIZE1
+2256                       ZTVTYPE1
+2257                       ZCABLESAT1
+2258                       ZCOMBODVR1
+2259                       ZDVR1
+2260                       ZDIGITSTB1
+2261                       ZPLAYSTA1
+2262                       ZCOMBOVCRDVD1
+2263                       ZVCR1
+2264                       ZDVD1
+2265                       ZTVAUDIOSYS1
+2266                       ZOTHERSTB1
+2267                       ZTVONWD1
+2268                       ZTVONWDWATCH1
+2269                       ZTVONWE1
+2270                       ZTVONWEWATCH1
+2271                       ZTVSIZE2
+2272                       ZTVTYPE2
+2273                       ZCABLESAT2
+2274                       ZCOMBODVR2
+2275                       ZDVR2
+2276                       ZDIGITSTB2
+2277                       ZPLAYSTA2
+2278                       ZCOMBOVCRDVD2
+2279                       ZVCR2
+2280                       ZDVD2
+2281                       ZTVAUDIOSYS2
+2282                       ZOTHERSTB2
+2283                       ZTVONWD2
+41                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2284                       ZTVONWDWATCH2
+2285                       ZTVONWE2
+2286                       ZTVONWEWATCH2
+2287                       ZTVSIZE3
+2288                       ZTVTYPE3
+2289                       ZCABLESAT3
+2290                       ZCOMBODVR3
+2291                       ZDVR3
+2292                       ZDIGITSTB3
+2293                       ZPLAYSTA3
+2294                       ZCOMBOVCRDVD3
+2295                       ZVCR3
+2296                       ZDVD3
+2297                       ZTVAUDIOSYS3
+2298                       ZOTHERSTB3
+2299                       ZTVONWD3
+2300                       ZTVONWDWATCH3
+2301                       ZTVONWE3
+2302                       ZTVONWEWATCH3
+2303                       ZCOMPUTER
+2304                       ZNUMPC
+2305                       ZPCTYPE1
+2306                       ZMONITOR1
+2307                       ZTIMEON1
+2308                       ZPCONOFF1
+2309                       ZPCSLEEP1
+2310                       ZPCTYPE2
+2311                       ZMONITOR2
+2312                       ZTIMEON2
+2313                       ZPCONOFF2
+2314                       ZPCSLEEP2
+2315                       ZPCTYPE3
+2316                       ZMONITOR3
+2317                       ZTIMEON3
+2318                       ZPCONOFF3
+2319                       ZPCSLEEP3
+2320                       ZINTERNET
+2321                       ZINDIALUP
+2322                       ZINDSL
+2323                       ZINCABLE
+2324                       ZINSATEL
+2325                       ZINWIRELESS
+2326                       ZPCPRINT
+2327                       ZFAX
+2328                       ZCOPIER
+2329                       ZWELLPUMP
+2330                       ZDIPSTICK
+2331                       ZSWAMPCOL
+2332                       ZAQUARIUM
+2333                       ZSTEREO
+2334                       ZNOCORD
+2335                       ZANSMACH
+2336                       ZBATTOOLS
+2337                       ZBATCHRG
+2338                       ZCHRGPLGT
+2339                       ZELECDEV
+2340                       ZELECCHRG
+2341                       ZCHRGPLGE
+42                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2342                       HEATHOME
+2343                       DNTHEAT
+2344                       EQUIPNOHEAT
+2345                       FUELNOHEAT
+2346                       EQUIPM
+2347                       FUELHEAT
+2348                       MAINTHT
+2349                       EQUIPAGE
+2350                       REPLCHT
+2351                       HELPHT
+2352                       HELPHTY
+2353                       HEATOTH
+2354                       EQUIPAUX
+2355                       REVERSE
+2356                       WARMAIR
+2357                       FURNFUEL
+2358                       STEAMR
+2359                       RADFUEL
+2360                       PERMELEC
+2361                       PIPELESS
+2362                       PIPEFUEL
+2363                       ROOMHEAT
+2364                       RMHTFUEL
+2365                       WOODKILN
+2366                       HSFUEL
+2367                       CARRYEL
+2368                       CARRYKER
+2369                       CHIMNEY
+2370                       FPFUEL
+2371                       NGFPFLUE
+2372                       USENGFP
+2373                       RANGE
+2374                       RNGFUEL
+2375                       DIFEQUIP
+2376                       DIFFUEL
+2377                       EQMAMT
+2378                       HEATROOM
+2379                       THERMAIN
+2380                       NUMTHERM
+2381                       PROTHERM
+2382                       AUTOHEATNITE
+2383                       AUTOHEATDAY
+2384                       TEMPHOME
+2385                       TEMPGONE
+2386                       TEMPNITE
+2387                       MOISTURE
+2388                       USEMOISTURE
+2389                       ZHEATHOME
+2390                       ZDNTHEAT
+2391                       ZEQUIPNOHEAT
+2392                       ZFUELNOHEAT
+2393                       ZEQUIPM
+2394                       ZFUELHEAT
+2395                       ZMAINTHT
+2396                       ZEQUIPAGE
+2397                       ZHEATOTH
+2398                       ZFURNFUEL
+2399                       ZRADFUEL
+43                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2400                       ZPIPEFUEL
+2401                       ZRMHTFUEL
+2402                       ZHSFUEL
+2403                       ZFPFUEL
+2404                       ZNGFPFLUE
+2405                       ZUSENGFP
+2406                       ZRNGFUEL
+2407                       ZDIFFUEL
+2408                       ZEQMAMT
+2409                       ZHEATROOM
+2410                       ZTHERMAIN
+2411                       ZNUMTHERM
+2412                       ZPROTHERM
+2413                       ZAUTOHEATNITE
+2414                       ZAUTOHEATDAY
+2415                       ZTEMPHOME
+2416                       ZTEMPGONE
+2417                       ZTEMPNITE
+2418                       ZMOISTURE
+2419                       ZUSEMOISTURE
+2420                       NUMH2ONOTNK
+2421                       NUMH2OHTRS
+2422                       H2OTYPE1
+2423                       FUELH2O
+2424                       WHEATOTH
+2425                       WHEATSIZ
+2426                       WHEATAGE
+2427                       WHEATBKT
+2428                       HELPWH
+2429                       HELPWHY
+2430                       H2OTYPE2
+2431                       FUELH2O2
+2432                       WHEATSIZ2
+2433                       WHEATAGE2
+2434                       ZNUMH2OHTRS
+2435                       ZNUMH2ONOTNK
+2436                       ZH2OTYPE1
+2437                       ZFUELH2O
+2438                       ZWHEATOTH
+2439                       ZWHEATSIZ
+2440                       ZWHEATAGE
+2441                       ZWHEATBKT
+2442                       ZH2OTYPE2
+2443                       ZFUELH2O2
+2444                       ZWHEATSIZ2
+2445                       ZWHEATAGE2
+2446                       AIRCOND
+2447                       DNTAC
+2448                       COOLTYPENOAC
+2449                       COOLTYPE
+2450                       DUCTS
+2451                       CENACHP
+2452                       ACOTHERS
+2453                       MAINTAC
+2454                       AGECENAC
+2455                       REPLCCAC
+2456                       HELPCAC
+2457                       HELPCACY
+44                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2458                       ACROOMS
+2459                       USECENAC
+2460                       THERMAINAC
+2461                       PROTHERMAC
+2462                       AUTOCOOLNITE
+2463                       AUTOCOOLDAY
+2464                       TEMPHOMEAC
+2465                       TEMPGONEAC
+2466                       TEMPNITEAC
+2467                       NUMBERAC
+2468                       WWACAGE
+2469                       ESWWAC
+2470                       REPLCWWAC
+2471                       HELPWWAC
+2472                       HELPWWACY
+2473                       USEWWAC
+2474                       NUMCFAN
+2475                       USECFAN
+2476                       TREESHAD
+2477                       NOTMOIST
+2478                       USENOTMOIST
+2479                       ZAIRCOND
+2480                       ZDNTAC
+2481                       ZCOOLTYPENOAC
+2482                       ZCOOLTYPE
+2483                       ZDUCTS
+2484                       ZCENACHP
+2485                       ZACOTHERS
+2486                       ZMAINTAC
+2487                       ZAGECENAC
+2488                       ZUSECENAC
+2489                       ZACROOMS
+2490                       ZTHERMAINAC
+2491                       ZPROTHERMAC
+2492                       ZAUTOCOOLNITE
+2493                       ZAUTOCOOLDAY
+2494                       ZTEMPHOMEAC
+2495                       ZTEMPGONEAC
+2496                       ZTEMPNITEAC
+2497                       ZNUMBERAC
+2498                       ZWWACAGE
+2499                       ZUSEWWAC
+2500                       ZNUMCFAN
+2501                       ZUSECFAN
+2502                       ZTREESHAD
+2503                       ZNOTMOIST
+2504                       ZUSENOTMOIST
+2505                       HIGHCEIL
+2506                       CATHCEIL
+2507                       SWIMPOOL
+2508                       POOL
+2509                       FUELPOOL
+2510                       RECBATH
+2511                       FUELTUB
+2512                       LGT12
+2513                       LGT12EE
+2514                       LGT4
+2515                       LGT4EE
+45                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2516                       LGT1
+2517                       LGT1EE
+2518                       NOUTLGTNT
+2519                       LGTOEE
+2520                       NGASLIGHT
+2521                       INSTLCFL
+2522                       HELPCFL
+2523                       HELPCFLY
+2524                       SLDDRS
+2525                       DOOR1SUM
+2526                       WINDOWS
+2527                       TYPEGLASS
+2528                       NEWGLASS
+2529                       HELPWIN
+2530                       HELPWINY
+2531                       ADQINSUL
+2532                       INSTLINS
+2533                       AGEINS
+2534                       HELPINS
+2535                       HELPINSY
+2536                       DRAFTY
+2537                       INSTLWS
+2538                       AGEWS
+2539                       HELPWS
+2540                       HELPWSY
+2541                       AUDIT
+2542                       AGEAUD
+2543                       HELPAUD
+2544                       HELPAUDY
+2545                       ZHIGHCEIL
+2546                       ZCATHCEIL
+2547                       ZSWIMPOOL
+2548                       ZPOOL
+2549                       ZFUELPOOL
+2550                       ZRECBATH
+2551                       ZFUELTUB
+2552                       ZLGT12
+2553                       ZLGT4
+2554                       ZLGT1
+2555                       ZNOUTLGTNT
+2556                       ZNGASLIGHT
+2557                       ZSLDDRS
+2558                       ZDOOR1SUM
+2559                       ZWINDOWS
+2560                       ZTYPEGLASS
+2561                       ZNEWGLASS
+2562                       ZADQINSUL
+2563                       ZINSTLINS
+2564                       ZAGEINS
+2565                       ZDRAFTY
+2566                       ZINSTLWS
+2567                       ZAGEWS
+2568                       ZAUDIT
+2569                       ZAGEAUD
+2570                       USEEL
+2571                       USENG
+2572                       USELP
+2573                       USEFO
+46                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2574                       USEKERO
+2575                       USEWOOD
+2576                       USESOLAR
+2577                       USEOTH
+2578                       ELWARM
+2579                       ELECAUX
+2580                       ELCOOL
+2581                       ELWATER
+2582                       ELFOOD
+2583                       ELOTHER
+2584                       UGWARM
+2585                       UGASAUX
+2586                       UGWATER
+2587                       UGCOOK
+2588                       UGOTH
+2589                       LPWARM
+2590                       LPGAUX
+2591                       LPWATER
+2592                       LPCOOK
+2593                       LPOTHER
+2594                       FOWARM
+2595                       FOILAUX
+2596                       FOWATER
+2597                       FOOTHER
+2598                       KRWARM
+2599                       KEROAUX
+2600                       KRWATER
+2601                       KROTHER
+2602                       WDWARM
+2603                       WOODAUX
+2604                       WDWATER
+2605                       WDOTHUSE
+2606                       SOLWARM
+2607                       SOLARAUX
+2608                       SOLWATER
+2609                       SOLOTHER
+2610                       OTHWARM
+2611                       OTHERAUX
+2612                       OTHWATER
+2613                       OTHCOOK
+2614                       ONSITE
+2615                       ONSITEGRID
+2616                       PELHEAT
+2617                       PELHOTWA
+2618                       PELCOOK
+2619                       PELAC
+2620                       PELLIGHT
+2621                       OTHERWAYEL
+2622                       PGASHEAT
+2623                       PGASHTWA
+2624                       PUGCOOK
+2625                       PUGOTH
+2626                       OTHERWAYNG
+2627                       FOPAY
+2628                       OTHERWAYFO
+2629                       LPGPAY
+2630                       OTHERWAYLPG
+2631                       LPGDELV
+47                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2632                       KERODEL
+2633                       KEROCASH
+2634                       NOCRCASH
+2635                       NKRGALNC
+2636                       WOODLOGS
+2637                       WDSCRAP
+2638                       WDPELLET
+2639                       WDOTHER
+2640                       WOODAMT
+2641                       NUMCORDS
+2642                       ZONSITE
+2643                       ZONSITEGRID
+2644                       ZPELHEAT
+2645                       ZPELHOTWA
+2646                       ZPELCOOK
+2647                       ZPELAC
+2648                       ZPELLIGHT
+2649                       ZOTHERWAYEL
+2650                       ZPGASHEAT
+2651                       ZPGASHTWA
+2652                       ZPUGCOOK
+2653                       ZPUGOTH
+2654                       ZOTHERWAYNG
+2655                       ZFOPAY
+2656                       ZOTHERWAYFO
+2657                       ZLPGPAY
+2658                       ZOTHERWAYLPG
+2659                       ZKERODEL
+2660                       ZKEROCASH
+2661                       ZNOCRCASH
+2662                       ZNKRGALNC
+2663                       ZWOODLOGS
+2664                       ZWDSCRAP
+2665                       ZWDPELLET
+2666                       ZWDOTHER
+2667                       ZWOODAMT
+2668                       ZNUMCORDS
+2669                       KFUELOT
+2670                       HHSEX
+2671                       EMPLOYHH
+2672                       SPOUSE
+2673                       SDESCENT
+2674                       Householder_Race
+2675                       EDUCATION
+2676                       NHSLDMEM
+2677                       HHAGE
+2678                       AGEHHMEMCAT2
+2679                       AGEHHMEMCAT3
+2680                       AGEHHMEMCAT4
+2681                       AGEHHMEMCAT5
+2682                       AGEHHMEMCAT6
+2683                       AGEHHMEMCAT7
+2684                       AGEHHMEMCAT8
+2685                       AGEHHMEMCAT9
+2686                       AGEHHMEMCAT10
+2687                       AGEHHMEMCAT11
+2688                       AGEHHMEMCAT12
+2689                       AGEHHMEMCAT13
+48                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2690                       AGEHHMEMCAT14
+2691                       HBUSNESS
+2692                       ATHOME
+2693                       TELLWORK
+2694                       TELLDAYS
+2695                       OTHWORK
+2696                       WORKPAY
+2697                       RETIREPY
+2698                       SSINCOME
+2699                       CASHBEN
+2700                       INVESTMT
+2701                       RGLRPAY
+2702                       MONEYPY
+2703                       POVERTY100
+2704                       POVERTY150
+2705                       HUPROJ
+2706                       RENTHELP
+2707                       FOODASST
+2708                       ZHHSEX
+2709                       ZHHAGE
+2710                       ZEMPLOYHH
+2711                       ZSPOUSE
+2712                       ZSDESCENT
+2713                       ZHouseholder_Race
+2714                       ZEDUCATION
+2715                       ZNHSLDMEM
+2716                       ZAGEHHMEMCAT2
+2717                       ZAGEHHMEMCAT3
+2718                       ZAGEHHMEMCAT4
+2719                       ZAGEHHMEMCAT5
+2720                       ZAGEHHMEMCAT6
+2721                       ZAGEHHMEMCAT7
+2722                       ZAGEHHMEMCAT8
+2723                       ZAGEHHMEMCAT9
+2724                       ZAGEHHMEMCAT10
+2725                       ZAGEHHMEMCAT11
+2726                       ZAGEHHMEMCAT12
+2727                       ZAGEHHMEMCAT13
+2728                       ZAGEHHMEMCAT14
+2729                       ZHBUSNESS
+2730                       ZATHOME
+2731                       ZTELLWORK
+2732                       ZTELLDAYS
+2733                       ZOTHWORK
+2734                       ZWORKPAY
+2735                       ZRETIREPY
+2736                       ZSSINCOME
+2737                       ZCASHBEN
+2738                       ZINVESTMT
+2739                       ZRGLRPAY
+2740                       ZMONEYPY
+2741                       ZHUPROJ
+2742                       ZRENTHELP
+2743                       ZFOODASST
+2744                       TOTSQFT
+2745                       TOTSQFT_EN
+2746                       TOTHSQFT
+2747                       TOTUSQFT
+49                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2748                       TOTCSQFT
+2749                       TOTUCSQFT
+2750                       ZTOTSQFT
+2751                       ZTOTSQFT_EN
+2752                       ZTOTHSQFT
+2753                       ZTOTUSQFT
+2754                       ZTOTCSQFT
+2755                       ZTOTUCSQFT
+2756                       KWH
+2757                       KWHSPH
+2758                       KWHCOL
+2759                       KWHWTH
+2760                       KWHRFG
+2761                       KWHOTH
+2762                       BTUEL
+2763                       BTUELSPH
+2764                       BTUELCOL
+2765                       BTUELWTH
+2766                       BTUELRFG
+2767                       BTUELOTH
+2768                       DOLLAREL
+2769                       DOLELSPH
+2770                       DOLELCOL
+2771                       DOLELWTH
+2772                       DOLELRFG
+2773                       DOLELOTH
+2774                       CUFEETNG
+2775                       CUFEETNGSPH
+2776                       CUFEETNGWTH
+2777                       CUFEETNGOTH
+2778                       BTUNG
+2779                       BTUNGSPH
+2780                       BTUNGWTH
+2781                       BTUNGOTH
+2782                       DOLLARNG
+2783                       DOLNGSPH
+2784                       DOLNGWTH
+2785                       DOLNGOTH
+2786                       GALLONLP
+2787                       GALLONLPSPH
+2788                       GALLONLPWTH
+2789                       GALLONLPOTH
+2790                       BTULP
+2791                       BTULPSPH
+2792                       BTULPWTH
+2793                       BTULPOTH
+2794                       DOLLARLP
+2795                       DOLLPSPH
+2796                       DOLLPWTH
+2797                       DOLLPOTH
+2798                       GALLONFO
+2799                       GALLONFOSPH
+2800                       GALLONFOWTH
+2801                       GALLONFOOTH
+2802                       BTUFO
+2803                       BTUFOSPH
+2804                       BTUFOWTH
+2805                       BTUFOOTH
+50                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+2806                       DOLLARFO
+2807                       DOLFOSPH
+2808                       DOLFOWTH
+2809                       DOLFOOTH
+2810                       GALLONKER
+2811                       GALLONKERSPH
+2812                       GALLONKERWTH
+2813                       GALLONKEROTH
+2814                       BTUKER
+2815                       BTUKERSPH
+2816                       BTUKERWTH
+2817                       BTUKEROTH
+2818                       DOLLARKER
+2819                       DOLKERSPH
+2820                       DOLKERWTH
+2821                       DOLKEROTH
+2822                       BTUWOOD
+2823                       CORDSWD
+2824                       TOTALBTU
+2825                       TOTALBTUSPH
+2826                       TOTALBTUCOL
+2827                       TOTALBTUWTH
+2828                       TOTALBTURFG
+2829                       TOTALBTUOTH
+2830                       TOTALDOL
+2831                       TOTALDOLSPH
+2832                       TOTALDOLCOL
+2833                       TOTALDOLWTH
+2834                       TOTALDOLRFG
+2835                       TOTALDOLOTH
+2836                       KAVALEL
+2837                       PERIODEL
+2838                       SCALEEL
+2839                       KAVALNG
+2840                       PERIODNG
+2841                       SCALENG
+2842                       PERIODLP
+2843                       SCALELP
+2844                       PERIODFO
+2845                       SCALEFO
+2846                       PERIODKR
+2847                       SCALEKER
+2848                       IECC_Climate_Pub $
+2849                       HDD50
+2850                       CDD80
+2851                       GND_HDD65
+2852                       WSF
+2853                       OA_LAT
+2854                       GWT
+2855                       DesignDBT99
+2856                       DesignDBT1
+2857           ;
+2858           if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+2859           run;
+
+NOTE: The infile './data/recs2009_public.csv' is:
+      Filename=/afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data/recs2009_public.csv,
+      Owner Name=jbhender,Group Name=wheel,
+51                                                         The SAS System                          11:01 Thursday, November 29, 2018
+
+      Access Permission=rw-r--r--,
+      Last Modified=Wed Nov 28 22:15:51 2018,
+      File Size (bytes)=28917457
+
+NOTE: 12084 records were read from the infile './data/recs2009_public.csv'.
+      The minimum record length was 0.
+      The maximum record length was 2460.
+NOTE: The data set WORK.RECS has 12084 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.62 seconds
+      cpu time            0.62 seconds
+      
+
+12084 rows created in WORK.RECS from ./data/recs2009_public.csv.
+  
+  
+  
+NOTE: WORK.RECS data set was successfully created.
+NOTE: The data set WORK.RECS has 12084 observations and 940 variables.
+NOTE: PROCEDURE IMPORT used (Total process time):
+      real time           5.91 seconds
+      cpu time            5.90 seconds
+      
+
+2860        set recs;
+2861       
+
+NOTE: There were 12084 observations read from the data set WORK.RECS.
+NOTE: The data set MYLIB.RECS2009 has 12084 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           3.95 seconds
+      cpu time            3.00 seconds
+      
+
+2862       proc contents data=mylib.recs2009;
+2863       
+2864       run;
+
+NOTE: PROCEDURE CONTENTS used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.01 seconds
+      
+NOTE: The PROCEDURE CONTENTS printed pages 1-19.
+
+2865       
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           9.93 seconds
+      cpu time            8.92 seconds
+      

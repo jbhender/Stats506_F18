@@ -1,0 +1,161 @@
+1                                                          The SAS System                          11:09 Thursday, November 29, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.02 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads the RECS data from:
+5           ./data/recs2009_public.sas7bdat
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Then creates urban and rural subsets
+9          and writes as sas7bdat.
+10         
+11         Author: James Henderson (jbhender@umich.edu)
+12         Date: Nov 28, 2019
+13          *****************************************************
+14         */
+15         
+16         /* data library for reading/writing data */
+17         libname mylib '~/Stats506_F18/Examples//SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples//SAS/data
+18         
+19         /* Create a rural subset */
+20         data rural;
+21          set mylib.recs2009_public_v4;
+22           if ur='U' then delete;
+2                                                          The SAS System                          11:09 Thursday, November 29, 2018
+
+23         
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RURAL has 2427 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.04 seconds
+      cpu time            0.03 seconds
+      
+
+24         data mylib.recs_rural;
+25           set rural;
+26         
+27         /* Create and write an urban subset */
+
+NOTE: There were 2427 observations read from the data set WORK.RURAL.
+NOTE: The data set MYLIB.RECS_RURAL has 2427 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.69 seconds
+      cpu time            0.55 seconds
+      
+
+28         data urban;
+29          set mylib.recs2009_public_v4;
+30           if ur='R' then delete;
+31         
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.URBAN has 9656 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.07 seconds
+      cpu time            0.08 seconds
+      
+
+32         data mylib.recs_urban;
+33          set urban;
+34         
+35         run;
+
+NOTE: There were 9656 observations read from the data set WORK.URBAN.
+NOTE: The data set MYLIB.RECS_URBAN has 9656 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           2.83 seconds
+      cpu time            2.13 seconds
+      
+
+36         
+37         /* Test final obs between CSV and sas7bdat */
+38         
+39         data saslast5;
+40           set mylib.recs2009_public_v4 nobs=obscount;
+41           if _n_ gt (obscount - 5);
+42         
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.SASLAST5 has 5 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.04 seconds
+3                                                          The SAS System                          11:09 Thursday, November 29, 2018
+
+      
+
+43         proc print data=saslast5;
+44           var DOEID;
+45         
+
+NOTE: There were 5 observations read from the data set WORK.SASLAST5.
+NOTE: The PROCEDURE PRINT printed page 1.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+46         data csvlast5;
+47          set mylib.recs2009 nobs=obscount;
+48          if _n_ gt (obscount - 5);
+49         
+
+NOTE: There were 12084 observations read from the data set MYLIB.RECS2009.
+NOTE: The data set WORK.CSVLAST5 has 5 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.03 seconds
+      
+
+50         proc print data=csvlast5;
+51          var DOEID;
+NOTE: There were 5 observations read from the data set WORK.CSVLAST5.
+NOTE: The PROCEDURE PRINT printed page 2.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           3.76 seconds
+      cpu time            2.89 seconds
+      

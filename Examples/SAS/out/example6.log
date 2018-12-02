@@ -1,0 +1,226 @@
+1                                                          The SAS System                             17:44 Sunday, December 2, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.07 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads the RECS data from:
+5           ./data/recs2009_public.sas7bdat
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Find the state with the highest proportion of wood shingles.
+9          
+10         Author: James Henderson (jbhender@umich.edu)
+11         Date: Dec 2, 2018
+12          *****************************************************
+13         */
+14         
+15         /* data library for reading/writing data */
+16         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+17         
+18         /* create a short name for recs data */
+19         data recs;
+20          set mylib.recs2009_public_v4;
+21          n_rt2=0;
+22          if rooftype=2 then n_rt2=nweight;
+2                                                          The SAS System                             17:44 Sunday, December 2, 2018
+
+23          if rooftype=-2 then delete;
+24          keep n_rt2 rooftype reportable_domain nweight doeid regionc;
+25         
+26         /* format statement for states */
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RECS has 10160 observations and 6 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.03 seconds
+      
+
+27         proc format library=mylib.recs_formats;
+28          value state
+29                1="Connecticut, Maine, New Hampshire, Rhode Island, Vermont"
+30                2="Massachusetts"
+31                3="New York"
+32                4="New Jersey"
+33                5="Pennsylvania"
+34                6="Illinois"
+35                7="Indiana, Ohio"
+36                8="Michigan"
+37                9="Wisconsin"
+38                10="Iowa, Minnesota, North Dakota, South Dakota"
+39                11="Kansas, Nebraska"
+40                12="Missouri"
+41                13="Virginia"
+42                14="Delaware, District of Columbia, Maryland, West Virginia"
+43                15="Georgia"
+44                16="North Carolina, South Carolina"
+45                17="Florida"
+46                18="Alabama, Kentucky, Mississippi"
+47                19="Tennessee"
+48                20="Arkansas, Louisiana, Oklahoma"
+49                21="Texas"
+50                22="Colorado"
+51                23="Idaho, Montana, Utah, Wyoming"
+52                24="Arizona"
+53                25="Nevada, New Mexico"
+54                26="California"
+55                27="Alaska, Hawaii, Oregon, Washington";
+NOTE: Format STATE has been written to MYLIB.RECS_FORMATS.
+56         
+57         /* create grouped summary table */
+
+NOTE: PROCEDURE FORMAT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+58         proc summary data=recs;
+59          class reportable_domain;
+60          output out=totals
+61                 sum(nweight) = total
+62                 sum(n_rt2) = rt2_total;
+63         
+
+NOTE: There were 10160 observations read from the data set WORK.RECS.
+3                                                          The SAS System                             17:44 Sunday, December 2, 2018
+
+NOTE: The data set WORK.TOTALS has 28 observations and 5 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+      
+
+64         proc print data=totals;
+65         
+66         /* alternately use a by statement */
+
+NOTE: There were 28 observations read from the data set WORK.TOTALS.
+NOTE: The PROCEDURE PRINT printed page 1.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+67         proc sort data=recs;
+68          by reportable_domain;
+69         
+
+NOTE: There were 10160 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.RECS has 10160 observations and 6 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+70         proc summary data=recs;
+71          by reportable_domain;
+72          output out=totals_by
+73            sum(nweight) = total
+74            sum(n_rt2) = rt2_total;
+75         
+
+NOTE: There were 10160 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.TOTALS_BY has 27 observations and 5 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+76         proc print data=totals_by;
+77         
+78         /* compute % */
+
+NOTE: There were 27 observations read from the data set WORK.TOTALS_BY.
+NOTE: The PROCEDURE PRINT printed page 2.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+79         data pct_wood_shingles;
+80          set totals;
+81          if _TYPE_=1;
+82          pct = 100*rt2_total/total;
+83          keep reportable_domain pct;
+4                                                          The SAS System                             17:44 Sunday, December 2, 2018
+
+84          label reportable_domain = 'State(s)'
+85                pct = '% Wood Shingled Roofs';
+86         
+87         /* sort from highest to lowest */
+
+NOTE: There were 28 observations read from the data set WORK.TOTALS.
+NOTE: The data set WORK.PCT_WOOD_SHINGLES has 27 observations and 2 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+88         proc sort data=pct_wood_shingles;
+89          by pct;
+90         
+91         /* print results using format to control appearance of output */
+
+NOTE: There were 27 observations read from the data set WORK.PCT_WOOD_SHINGLES.
+NOTE: The data set WORK.PCT_WOOD_SHINGLES has 27 observations and 2 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+92         proc print data=pct_wood_shingles noobs label;
+93          format pct 4.1
+94          	reportable_domain state.;
+ERROR: The format STATE was not found or could not be loaded.
+95         
+96         run;
+
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+ERROR: Errors printed on page 4.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.16 seconds
+      cpu time            0.08 seconds
+      

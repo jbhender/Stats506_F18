@@ -4,9 +4,15 @@
  * Author: James Henderson (jbhender@umich.edu)
  * Date: Nov 29, 2018
  */ 
+/* 80: ---------------------------------------------------------------------- */
 
+/* Set a library: ----------------------------------------------------------- */ 
 libname mylib '~/Stats506_F18/Examples/SAS/data/';
 
+/* Tell sas where to find formats: ------------------------------------------ */ 
+options fmtsearch=( mylib.recs_formats work ); 
+
+/* Use proc sql to find % wood shingle roof by "State": --------------------- */
 proc sql;
 
   /* Count total homes by state */
@@ -33,9 +39,20 @@ proc sql;
 
   quit;
 
-/* Print the result */
+/* Print the result: -------------------------------------------------------- */
 proc print data=wood_roof_pct;
   var state percent_wood;
-  format percent_wood 4.1;
+  format percent_wood 4.1
+         state state.;
 
 run;
+
+/* Export to csv: ----------------------------------------------------------- */
+proc export data=wood_roof_pct
+  outfile = 'wood_roof_pct.csv'
+  dbms=dlm replace; 
+  delimiter  = ",";
+
+run; 
+
+/* 80: ---------------------------------------------------------------------- */

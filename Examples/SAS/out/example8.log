@@ -1,0 +1,194 @@
+1                                                          The SAS System                             18:27 Sunday, December 2, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.02 seconds
+      
+1          /* Compute the percent of wood shingled roofs by state
+2           * using PROC SQL and the RECS data.
+3           *
+4           * Author: James Henderson (jbhender@umich.edu)
+5           * Date: Nov 29, 2018
+6           */
+7          /* 80: ---------------------------------------------------------------------- */
+8          
+9          /* Set a library: ----------------------------------------------------------- */
+10         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+11         
+12         /* Tell sas where to find formats: ------------------------------------------ */
+13         options fmtsearch=( mylib.recs_formats work );
+14         
+15         /* Use proc sql to find % wood shingle roof by "State": --------------------- */
+16         proc sql;
+17         
+18           /* Count total homes by state */
+19           create table total as
+20             select sum(nweight) as n_total, reportable_domain
+21               from mylib.recs2009_public_v4
+22               where rooftype > 0
+2                                                          The SAS System                             18:27 Sunday, December 2, 2018
+
+23               group by reportable_domain;
+NOTE: Table WORK.TOTAL created, with 27 rows and 2 columns.
+
+24         
+25           /* Count wood shingle roofs by state */
+26           create table wood_roof as
+27             select sum(nweight) as n_wood, reportable_domain
+28               from mylib.recs2009_public_v4
+29               where rooftype=2
+30               group by reportable_domain;
+NOTE: Table WORK.WOOD_ROOF created, with 27 rows and 2 columns.
+
+31         
+32           /* Join these two tables */
+33           create table wood_roof_pct as
+34             select t.reportable_domain as state, n_wood, n_total, 100*n_wood/n_total as percent_wood
+35               from total t
+36               inner join wood_roof w
+37               on t.reportable_domain=w.reportable_domain
+38             order by -percent_wood;
+NOTE: The query as specified involves ordering by an item that doesn't appear in its SELECT clause.
+NOTE: Table WORK.WOOD_ROOF_PCT created, with 27 rows and 4 columns.
+
+39         
+40           quit;
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           0.05 seconds
+      cpu time            0.05 seconds
+      
+
+41         
+42         /* Print the result: -------------------------------------------------------- */
+43         proc print data=wood_roof_pct;
+44           var state percent_wood;
+45           format percent_wood 4.1
+46                  state state.;
+47         
+48         run;
+
+NOTE: There were 27 observations read from the data set WORK.WOOD_ROOF_PCT.
+NOTE: The PROCEDURE PRINT printed page 1.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+49         
+50         /* Export to csv: ----------------------------------------------------------- */
+51         proc export data=wood_roof_pct
+52           outfile = 'wood_roof_pct.csv'
+53           dbms=dlm replace;
+54           delimiter  = ",";
+55         
+56         run;
+
+57          /**********************************************************************
+58          *   PRODUCT:   SAS
+59          *   VERSION:   9.3
+3                                                          The SAS System                             18:27 Sunday, December 2, 2018
+
+60          *   CREATOR:   External File Interface
+61          *   DATE:      02DEC18
+62          *   DESC:      Generated SAS Datastep Code
+63          *   TEMPLATE SOURCE:  (None Specified.)
+64          ***********************************************************************/
+65             data _null_;
+66             %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+67             %let _EFIREC_ = 0;     /* clear export record count macro variable */
+68             file 'wood_roof_pct.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+69             if _n_ = 1 then        /* write column names or labels */
+70              do;
+71                put
+72                   "state"
+73                ','
+74                   "n_wood"
+75                ','
+76                   "n_total"
+77                ','
+78                   "percent_wood"
+79                ;
+80              end;
+81            set  WOOD_ROOF_PCT   end=EFIEOD;
+82                format state best12. ;
+83                format n_wood best12. ;
+84                format n_total best12. ;
+85                format percent_wood best12. ;
+86              do;
+87                EFIOUT + 1;
+88                put state @;
+89                put n_wood @;
+90                put n_total @;
+91                put percent_wood ;
+92                ;
+93              end;
+94             if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+95             if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+96             run;
+
+NOTE: The file 'wood_roof_pct.csv' is:
+      Filename=/afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/wood_roof_pct.csv,
+      Owner Name=jbhender,Group Name=wheel,
+      Access Permission=rw-r--r--,
+      Last Modified=Sun Dec  2 18:27:13 2018
+
+NOTE: 28 records were written to the file 'wood_roof_pct.csv'.
+      The minimum record length was 33.
+      The maximum record length was 41.
+NOTE: There were 27 observations read from the data set WORK.WOOD_ROOF_PCT.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+27 records created in wood_roof_pct.csv from WOOD_ROOF_PCT.
+  
+  
+NOTE: "wood_roof_pct.csv" file was successfully created.
+NOTE: PROCEDURE EXPORT used (Total process time):
+4                                                          The SAS System                             18:27 Sunday, December 2, 2018
+
+      real time           0.04 seconds
+      cpu time            0.03 seconds
+      
+
+97         
+98         /* 80: ---------------------------------------------------------------------- */
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.15 seconds
+      cpu time            0.11 seconds
+      

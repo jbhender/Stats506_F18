@@ -1,0 +1,227 @@
+1                                                          The SAS System                             17:23 Sunday, December 2, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.36 seconds
+      cpu time            0.02 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads the RECS data from:
+5           ./data/recs2009_public.sas7bdat
+6           http://www.eia.gov/consumption/residential/data/2009/index.cfm?view=microdata
+7          
+8          Then demonstrates sevaral procs for descriptive statistics:
+9           proc means, proc summary, proc freq
+10          Not shown here but similar: proc univariate
+11         
+12         Author: James Henderson (jbhender@umich.edu)
+13         Date: Nov 28, 2018
+14          *****************************************************
+15         */
+16         
+17         /* data library for reading/writing data */
+18         libname mylib '~/Stats506_F18/Examples/SAS/data/';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+19         
+20         /* create a short name for recs data */
+21         data recs;
+22          set mylib.recs2009_public_v4;
+2                                                          The SAS System                             17:23 Sunday, December 2, 2018
+
+23         
+24         
+25         /* proc means */
+
+NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RECS has 12083 observations and 940 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.09 seconds
+      cpu time            0.09 seconds
+      
+
+26         proc means data=recs;
+27          var cdd65;
+28          class regionc;
+29         
+30         /* proc sort for use with 'by' in proc means */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE MEANS printed page 1.
+NOTE: PROCEDURE MEANS used (Total process time):
+      real time           0.05 seconds
+      cpu time            0.05 seconds
+      
+
+31         proc sort data=recs;
+32          by regionc;
+33         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.RECS has 12083 observations and 940 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.20 seconds
+      cpu time            0.20 seconds
+      
+
+34         proc means data=recs;
+35          var cdd65;
+36          by regionc;
+37         
+38         /* twice stratified using "by" */
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE MEANS printed page 2.
+NOTE: PROCEDURE MEANS used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.02 seconds
+      
+
+39         proc sort data=recs;
+40          by regionc ur;
+41         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.RECS has 12083 observations and 940 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.20 seconds
+      cpu time            0.20 seconds
+      
+3                                                          The SAS System                             17:23 Sunday, December 2, 2018
+
+
+42         proc means;
+43          var cdd65;
+44          by regionc ur;
+45         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE MEANS printed pages 3-4.
+NOTE: PROCEDURE MEANS used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.03 seconds
+      
+
+46         proc means;
+47          var cdd65 hdd65;
+48          by regionc ur;
+49         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE MEANS printed pages 5-6.
+NOTE: PROCEDURE MEANS used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.02 seconds
+      
+
+50         proc means;
+51          var cdd65 hdd65;
+52          class ur;
+53          by regionc;
+54         
+55         /***********
+56          PROC FREQ
+57          ***********
+58         */
+59         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The PROCEDURE MEANS printed pages 7-9.
+NOTE: PROCEDURE MEANS used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+60         proc freq data=recs;
+61           tables occupyyrange / out=mylib.occupyrange_freq;
+62         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The data set MYLIB.OCCUPYRANGE_FREQ has 8 observations and 3 variables.
+NOTE: The PROCEDURE FREQ printed page 10.
+NOTE: PROCEDURE FREQ used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.02 seconds
+      
+
+63         proc print data=occupyrange_freq;
+ERROR: File WORK.OCCUPYRANGE_FREQ.DATA does not exist.
+64         
+4                                                          The SAS System                             17:23 Sunday, December 2, 2018
+
+65         /************
+66          PROC SUMMARY
+67          ************
+68         */
+69         
+
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+
+70         proc summary data=recs;;
+71          class regionc;
+72          output out=meanstats
+73            mean(kwh) = mean_kwh
+74            std(kwh) = std_kwh;
+75         
+
+NOTE: There were 12083 observations read from the data set WORK.RECS.
+NOTE: The data set WORK.MEANSTATS has 5 observations and 5 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.02 seconds
+      cpu time            0.01 seconds
+      
+
+76         proc print data=meanstats;
+77         
+78         run;
+
+NOTE: There were 5 observations read from the data set WORK.MEANSTATS.
+NOTE: The PROCEDURE PRINT printed page 11.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+ERROR: Errors printed on page 3.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           1.11 seconds
+      cpu time            0.69 seconds
+      

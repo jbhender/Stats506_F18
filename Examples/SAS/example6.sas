@@ -8,7 +8,7 @@ This file reads the RECS data from:
 Find the state with the highest proportion of wood shingles.
 
 Author: James Henderson (jbhender@umich.edu)
-Date: Nov 13, 2017
+Date: Dec 2, 2018
  *****************************************************
 */
 
@@ -20,7 +20,7 @@ data recs;
  set mylib.recs2009_public_v4;
  n_rt2=0;
  if rooftype=2 then n_rt2=nweight;
- if fooftype=-2 then delete;
+ if rooftype=-2 then delete;
  keep n_rt2 rooftype reportable_domain nweight doeid regionc;
 
 /* format statement for states */
@@ -63,6 +63,18 @@ proc summary data=recs;
 
 proc print data=totals;
 
+/* alternately use a by statement */
+proc sort data=recs; 
+ by reportable_domain;
+
+proc summary data=recs;
+ by reportable_domain;
+ output out=totals_by
+   sum(nweight) = total
+   sum(n_rt2) = rt2_total; 
+
+proc print data=totals_by; 
+
 /* compute % */
 data pct_wood_shingles;
  set totals;
@@ -76,6 +88,7 @@ data pct_wood_shingles;
 proc sort data=pct_wood_shingles;
  by pct;
 
+/* print results using format to control appearance of output */
 proc print data=pct_wood_shingles noobs label;
  format pct 4.1
  	reportable_domain state.;
