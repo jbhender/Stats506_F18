@@ -1,0 +1,99 @@
+1                                                          The SAS System                            09:19 Tuesday, December 4, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file reads compressed daily temperature data
+5          for 2016 in '2016.csv.gz' downloaded from:
+6          
+7          ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/by_year
+8          
+9          Author: James Henderson
+10         Date: Dec 4, 2018
+11          *****************************************************
+12         */
+13         
+14         libname mylib './data';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+15         
+16         /* use a filename pipe to read compressed data */
+17         filename ghcnd_gz pipe "gzip -dc .//data/2016.csv.gz" lrecl=80;
+18         
+19         /* a data step and 'infile' statement allows flexible import.
+20          * the 'input' statement names and formats the columns
+21          * the 'format' statement controls the mmddyy output
+22          */
+2                                                          The SAS System                            09:19 Tuesday, December 4, 2018
+
+23         data ghcnd;
+24             infile ghcnd_gz dsd delimiter=',';
+25             input station : $11. date : yymmdd8. obstype : $ obsval;
+26             format date mmddyy10.;
+27         
+28         /* What is this step doing? */
+
+NOTE: The infile GHCND_GZ is:
+      Pipe command="gzip -dc .//data/2016.csv.gz"
+
+NOTE: 34212915 records were read from the infile GHCND_GZ.
+      The minimum record length was 32.
+      The maximum record length was 41.
+NOTE: The data set WORK.GHCND has 34212915 observations and 4 variables.
+NOTE: DATA statement used (Total process time):
+      real time           32.14 seconds
+      cpu time            32.08 seconds
+      
+
+29         data mylib.ghcnd_2016;
+30          set ghcnd;
+31         
+32         run;
+
+NOTE: There were 34212915 observations read from the data set WORK.GHCND.
+NOTE: The data set MYLIB.GHCND_2016 has 34212915 observations and 4 variables.
+NOTE: DATA statement used (Total process time):
+      real time           58.59 seconds
+      cpu time            46.04 seconds
+      
+
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           1:30.78
+      cpu time            1:18.14
+      

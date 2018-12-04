@@ -1,0 +1,42 @@
+                                                             high_kwh2                           08:48 Tuesday, December 4, 2018   1
+
+                                                 Obs    REGIONC    _TYPE_    _FREQ_
+
+                                                  1        .          0        998 
+                                                  2        1          1        167 
+                                                  3        2          1        263 
+                                                  4        3          1        353 
+                                                  5        4          1        215 
+                                                              all_kwh                            08:48 Tuesday, December 4, 2018   2
+
+                                                 Obs    REGIONC    _TYPE_    _FREQ_
+
+                                                  1        .          0       7803 
+                                                  2        1          1       1189 
+                                                  3        2          1       2105 
+                                                  4        3          1       2733 
+                                                  5        4          1       1776 
+                                                              all_kwh2                           08:48 Tuesday, December 4, 2018   3
+
+                                                       Obs    REGIONC      N
+
+                                                        1        1       1189
+                                                        2        2       2105
+                                                        3        3       2733
+                                                        4        4       1776
+                                                                                                 08:48 Tuesday, December 4, 2018   4
+
+                                                       Obs    REGIONC      N
+
+                                                        1        1       1189
+                                                        2        2       2105
+                                                        3        3       2733
+                                                        4        4       1776
+                                                                                                 08:48 Tuesday, December 4, 2018   5
+
+                                               Obs    REGIONC      N     high     pct
+
+                                                1        1       1189     167    14.0
+                                                2        2       2105     263    12.5
+                                                3        3       2733     353    12.9
+                                                4        4       1776     215    12.1

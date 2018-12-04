@@ -1,0 +1,280 @@
+1                                                          The SAS System                            08:48 Tuesday, December 4, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /* An example of "data step programming" for Stats 506.
+2           *
+3           * This analysis finds the % of single family homes
+4           * more than 1 sd above average in terms of electrical
+5           * usage by cesnsus region.
+6           *
+7           * Date: Dec 4, 2018
+8           */
+9          
+10         libname mydata './data/';
+NOTE: Libref MYDATA was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+11         
+12         /* read full data and subset to single family homes */
+13         data recs1;
+14             set mydata.recs2009_public_v4;
+15             if typehuq = 2;
+16             keep doeid regionc kwh;
+17         
+18         /* Sort and then compute summary statistics */
+
+NOTE: There were 12083 observations read from the data set MYDATA.RECS2009_PUBLIC_V4.
+NOTE: The data set WORK.RECS1 has 7803 observations and 3 variables.
+NOTE: DATA statement used (Total process time):
+2                                                          The SAS System                            08:48 Tuesday, December 4, 2018
+
+      real time           0.03 seconds
+      cpu time            0.03 seconds
+      
+
+19         proc sort data=recs1 out=recs2;
+20             by regionc;
+21         
+
+NOTE: There were 7803 observations read from the data set WORK.RECS1.
+NOTE: The data set WORK.RECS2 has 7803 observations and 3 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+      
+
+22         proc summary;
+23             class regionc;
+24             output out=meanstats1
+25                 mean(kwh) = mean_kwh
+26                 std(kwh) = std_kwh;
+27         
+
+NOTE: There were 7803 observations read from the data set WORK.RECS2.
+NOTE: The data set WORK.MEANSTATS1 has 5 observations and 5 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+      
+
+28         proc sort data=meanstats1 out=meanstats2;
+29             by regionc;
+30         
+31         /* "Remerge" summary stats into sorted recs data */
+
+NOTE: There were 5 observations read from the data set WORK.MEANSTATS1.
+NOTE: The data set WORK.MEANSTATS2 has 5 observations and 5 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+32         data recs3;
+33             merge recs2 meanstats2(keep=regionc mean_kwh std_kwh);
+34             by regionc;
+35         
+36         /* Filter homes 1 sd above mean kwh*/
+
+NOTE: There were 7803 observations read from the data set WORK.RECS2.
+NOTE: There were 5 observations read from the data set WORK.MEANSTATS2.
+NOTE: The data set WORK.RECS3 has 7804 observations and 5 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+37         data recs4;
+38             set recs3;
+39             high_kwh = mean_kwh + std_kwh;
+3                                                          The SAS System                            08:48 Tuesday, December 4, 2018
+
+40             if kwh ge high_kwh;
+41         
+42         /* Number above thresholds */
+
+NOTE: There were 7804 observations read from the data set WORK.RECS3.
+NOTE: The data set WORK.RECS4 has 998 observations and 6 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+43         proc summary;           /* Note: data is implicitly recs4 */
+44             class regionc;
+45             output out=high_kwh;
+46         
+
+NOTE: There were 998 observations read from the data set WORK.RECS4.
+NOTE: The data set WORK.HIGH_KWH has 5 observations and 3 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+      
+
+47         proc sort data=high_kwh out=high_kwh2;
+48           by regionc;
+49         
+50         /* Print to see result */
+51         title "high_kwh2";
+
+NOTE: There were 5 observations read from the data set WORK.HIGH_KWH.
+NOTE: The data set WORK.HIGH_KWH2 has 5 observations and 3 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+52         proc print data=high_kwh2;
+53         
+54         /* Total number */
+
+NOTE: There were 5 observations read from the data set WORK.HIGH_KWH2.
+NOTE: The PROCEDURE PRINT printed page 1.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+      
+
+55         proc summary data=recs3;
+56           class regionc;
+57           output out=all_kwh;
+58         
+59         title "all_kwh";
+
+NOTE: There were 7804 observations read from the data set WORK.RECS3.
+NOTE: The data set WORK.ALL_KWH has 5 observations and 3 variables.
+NOTE: PROCEDURE SUMMARY used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+4                                                          The SAS System                            08:48 Tuesday, December 4, 2018
+
+      
+
+60         proc print data=all_kwh;
+61         
+
+NOTE: There were 5 observations read from the data set WORK.ALL_KWH.
+NOTE: The PROCEDURE PRINT printed page 2.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+62         data all_kwh2;
+63           set all_kwh;
+64           if _TYPE_ = 0 then delete;
+65           N = _FREQ_;
+66           keep regionc N;
+67         
+68         title "all_kwh2";
+
+NOTE: There were 5 observations read from the data set WORK.ALL_KWH.
+NOTE: The data set WORK.ALL_KWH2 has 4 observations and 2 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+69         proc print data=all_kwh2;
+70         
+
+NOTE: There were 4 observations read from the data set WORK.ALL_KWH2.
+NOTE: The PROCEDURE PRINT printed page 3.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+71         proc sort data=all_kwh2 out=all_kwh3;
+72           by regionc;
+73         
+74         title "all_kwh3";
+
+NOTE: There were 4 observations read from the data set WORK.ALL_KWH2.
+NOTE: The data set WORK.ALL_KWH3 has 4 observations and 2 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+75         proc print data=all_kwh3;
+76         
+77         /* Merge together */
+78         title;
+
+NOTE: There were 4 observations read from the data set WORK.ALL_KWH3.
+NOTE: The PROCEDURE PRINT printed page 4.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+5                                                          The SAS System                            08:48 Tuesday, December 4, 2018
+
+      cpu time            0.00 seconds
+      
+
+79         data pct_tab;
+80           merge all_kwh3 high_kwh2;
+81           by regionc;
+82           if _TYPE_ = 0 then delete;
+83           high = _FREQ_;
+84           pct = 100*high / N;
+85           keep regionc high N pct;
+86         
+
+NOTE: There were 4 observations read from the data set WORK.ALL_KWH3.
+NOTE: There were 5 observations read from the data set WORK.HIGH_KWH2.
+NOTE: The data set WORK.PCT_TAB has 4 observations and 4 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+      
+
+87         proc print data=pct_tab;
+88           format pct 4.1;
+89         
+90         run;
+
+NOTE: There were 4 observations read from the data set WORK.PCT_TAB.
+NOTE: The PROCEDURE PRINT printed page 5.
+NOTE: PROCEDURE PRINT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.11 seconds
+      cpu time            0.10 seconds
+      

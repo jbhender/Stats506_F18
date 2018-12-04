@@ -1,4 +1,4 @@
-1                                                          The SAS System                             17:44 Sunday, December 2, 2018
+1                                                          The SAS System                            08:58 Tuesday, December 4, 2018
 
 NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
 NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
@@ -30,7 +30,7 @@ The command line option "-nonews" will prevent this display.
 
 
 NOTE: SAS initialization used:
-      real time           0.07 seconds
+      real time           0.03 seconds
       cpu time            0.01 seconds
       
 1          /*****************************************************
@@ -58,7 +58,7 @@ NOTE: Libref MYLIB was successfully assigned as follows:
 20          set mylib.recs2009_public_v4;
 21          n_rt2=0;
 22          if rooftype=2 then n_rt2=nweight;
-2                                                          The SAS System                             17:44 Sunday, December 2, 2018
+2                                                          The SAS System                            08:58 Tuesday, December 4, 2018
 
 23          if rooftype=-2 then delete;
 24          keep n_rt2 rooftype reportable_domain nweight doeid regionc;
@@ -68,8 +68,8 @@ NOTE: Libref MYLIB was successfully assigned as follows:
 NOTE: There were 12083 observations read from the data set MYLIB.RECS2009_PUBLIC_V4.
 NOTE: The data set WORK.RECS has 10160 observations and 6 variables.
 NOTE: DATA statement used (Total process time):
-      real time           0.02 seconds
-      cpu time            0.03 seconds
+      real time           0.03 seconds
+      cpu time            0.02 seconds
       
 
 27         proc format library=mylib.recs_formats;
@@ -101,34 +101,38 @@ NOTE: DATA statement used (Total process time):
 53                25="Nevada, New Mexico"
 54                26="California"
 55                27="Alaska, Hawaii, Oregon, Washington";
+NOTE: Format STATE is already on the library.
 NOTE: Format STATE has been written to MYLIB.RECS_FORMATS.
 56         
-57         /* create grouped summary table */
+57         /* Tell SAS where to find this format later */
+58         options fmtsearch=( mylib.recs_formats work );
+59         
+60         /* create grouped summary table */
 
 NOTE: PROCEDURE FORMAT used (Total process time):
-      real time           0.01 seconds
-      cpu time            0.01 seconds
+      real time           0.00 seconds
+      cpu time            0.00 seconds
       
 
-58         proc summary data=recs;
-59          class reportable_domain;
-60          output out=totals
-61                 sum(nweight) = total
-62                 sum(n_rt2) = rt2_total;
-63         
+61         proc summary data=recs;
+62          class reportable_domain;
+63          output out=totals
+64                 sum(nweight) = total
+3                                                          The SAS System                            08:58 Tuesday, December 4, 2018
+
+65                 sum(n_rt2) = rt2_total;
+66         
 
 NOTE: There were 10160 observations read from the data set WORK.RECS.
-3                                                          The SAS System                             17:44 Sunday, December 2, 2018
-
 NOTE: The data set WORK.TOTALS has 28 observations and 5 variables.
 NOTE: PROCEDURE SUMMARY used (Total process time):
       real time           0.00 seconds
-      cpu time            0.01 seconds
+      cpu time            0.02 seconds
       
 
-64         proc print data=totals;
-65         
-66         /* alternately use a by statement */
+67         proc print data=totals;
+68         
+69         /* alternately use a by statement */
 
 NOTE: There were 28 observations read from the data set WORK.TOTALS.
 NOTE: The PROCEDURE PRINT printed page 1.
@@ -137,9 +141,9 @@ NOTE: PROCEDURE PRINT used (Total process time):
       cpu time            0.01 seconds
       
 
-67         proc sort data=recs;
-68          by reportable_domain;
-69         
+70         proc sort data=recs;
+71          by reportable_domain;
+72         
 
 NOTE: There were 10160 observations read from the data set WORK.RECS.
 NOTE: The data set WORK.RECS has 10160 observations and 6 variables.
@@ -148,12 +152,12 @@ NOTE: PROCEDURE SORT used (Total process time):
       cpu time            0.00 seconds
       
 
-70         proc summary data=recs;
-71          by reportable_domain;
-72          output out=totals_by
-73            sum(nweight) = total
-74            sum(n_rt2) = rt2_total;
-75         
+73         proc summary data=recs;
+74          by reportable_domain;
+75          output out=totals_by
+76            sum(nweight) = total
+77            sum(n_rt2) = rt2_total;
+78         
 
 NOTE: There were 10160 observations read from the data set WORK.RECS.
 NOTE: The data set WORK.TOTALS_BY has 27 observations and 5 variables.
@@ -162,9 +166,9 @@ NOTE: PROCEDURE SUMMARY used (Total process time):
       cpu time            0.00 seconds
       
 
-76         proc print data=totals_by;
-77         
-78         /* compute % */
+79         proc print data=totals_by;
+80         
+81         /* compute % */
 
 NOTE: There were 27 observations read from the data set WORK.TOTALS_BY.
 NOTE: The PROCEDURE PRINT printed page 2.
@@ -173,17 +177,17 @@ NOTE: PROCEDURE PRINT used (Total process time):
       cpu time            0.00 seconds
       
 
-79         data pct_wood_shingles;
-80          set totals;
-81          if _TYPE_=1;
-82          pct = 100*rt2_total/total;
-83          keep reportable_domain pct;
-4                                                          The SAS System                             17:44 Sunday, December 2, 2018
+82         data pct_wood_shingles;
+4                                                          The SAS System                            08:58 Tuesday, December 4, 2018
 
-84          label reportable_domain = 'State(s)'
-85                pct = '% Wood Shingled Roofs';
-86         
-87         /* sort from highest to lowest */
+83          set totals;
+84          if _TYPE_=1;
+85          pct = 100*rt2_total/total;
+86          keep reportable_domain pct;
+87          label reportable_domain = 'State(s)'
+88                pct = '% Wood Shingled Roofs';
+89         
+90         /* sort from highest to lowest */
 
 NOTE: There were 28 observations read from the data set WORK.TOTALS.
 NOTE: The data set WORK.PCT_WOOD_SHINGLES has 27 observations and 2 variables.
@@ -192,10 +196,10 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.00 seconds
       
 
-88         proc sort data=pct_wood_shingles;
-89          by pct;
-90         
-91         /* print results using format to control appearance of output */
+91         proc sort data=pct_wood_shingles;
+92          by pct;
+93         
+94         /* print results using format to control appearance of output */
 
 NOTE: There were 27 observations read from the data set WORK.PCT_WOOD_SHINGLES.
 NOTE: The data set WORK.PCT_WOOD_SHINGLES has 27 observations and 2 variables.
@@ -204,23 +208,21 @@ NOTE: PROCEDURE SORT used (Total process time):
       cpu time            0.00 seconds
       
 
-92         proc print data=pct_wood_shingles noobs label;
-93          format pct 4.1
-94          	reportable_domain state.;
-ERROR: The format STATE was not found or could not be loaded.
-95         
-96         run;
+95         proc print data=pct_wood_shingles noobs label;
+96          format pct 4.1
+97          	reportable_domain state.;
+98         
+99         run;
 
-NOTE: The SAS System stopped processing this step because of errors.
+NOTE: There were 27 observations read from the data set WORK.PCT_WOOD_SHINGLES.
+NOTE: The PROCEDURE PRINT printed page 3.
 NOTE: PROCEDURE PRINT used (Total process time):
       real time           0.00 seconds
       cpu time            0.00 seconds
       
 
-ERROR: Errors printed on page 4.
-
 NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
 NOTE: The SAS System used:
-      real time           0.16 seconds
+      real time           0.11 seconds
       cpu time            0.08 seconds
       

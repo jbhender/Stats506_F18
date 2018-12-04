@@ -24,7 +24,7 @@ data recs;
  keep n_rt2 rooftype reportable_domain nweight doeid regionc;
 
 /* format statement for states */
-proc format;
+proc format library=mylib.recs_formats;
  value state
        1="Connecticut, Maine, New Hampshire, Rhode Island, Vermont"
        2="Massachusetts"
@@ -53,6 +53,9 @@ proc format;
        25="Nevada, New Mexico"
        26="California"
        27="Alaska, Hawaii, Oregon, Washington";
+
+/* Tell SAS where to find this format later */
+options fmtsearch=( mylib.recs_formats work );
 
 /* create grouped summary table */
 proc summary data=recs;

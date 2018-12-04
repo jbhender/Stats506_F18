@@ -1,0 +1,183 @@
+1                                                          The SAS System                            09:18 Tuesday, December 4, 2018
+
+NOTE: Copyright (c) 2002-2010 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.3 (TS1M1) 
+      Licensed to UNIVERSITY OF MICHIGAN - T&R - SFA, Site 70080438.
+NOTE: This session is executing on the Linux 2.6.32-754.3.5.el6.x86_64 (LIN X64) platform.
+
+
+
+NOTE: Updated analytical products:
+
+SAS/STAT 9.3_M1, SAS/ETS 9.3_M1, SAS/OR 9.3_M1
+
+You are running SAS 9. Some SAS 8 files will be automatically converted 
+by the V9 engine; others are incompatible.  Please see 
+http://support.sas.com/rnd/migration/planning/platform/64bit.html
+
+PROC MIGRATE will preserve current SAS file attributes and is 
+recommended for converting all your SAS libraries from any 
+SAS 8 release to SAS 9.  For details and examples, please see
+http://support.sas.com/rnd/migration/index.html
+
+
+This message is contained in the SAS news file, and is presented upon
+initialization.  Edit the file "news" in the "misc/base" directory to
+display site-specific news and information in the program log.
+The command line option "-nonews" will prevent this display.
+
+
+
+
+NOTE: SAS initialization used:
+      real time           0.03 seconds
+      cpu time            0.01 seconds
+      
+1          /*****************************************************
+2          An example SAS program for Stats 506.
+3          
+4          This file uses column input to read the fixed width file
+5           'ghcnd-stations.txt' from:
+6          
+7          ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily
+8          
+9          This file has format:
+10         
+11         ------------------------------
+12         Variable   Columns   Type
+13         ------------------------------
+14         ID            1-11   Character
+15         LATITUDE     13-20   Real
+16         LONGITUDE    22-30   Real
+17         ELEVATION    32-37   Real
+18         STATE        39-40   Character
+19         NAME         42-71   Character
+20         GSN FLAG     73-75   Character
+21         HCN/CRN FLAG 77-79   Character
+22         WMO ID       81-85   Character
+23         ------------------------------
+24         
+25         We then save this data set as a sas7bdat.
+2                                                          The SAS System                            09:18 Tuesday, December 4, 2018
+
+26         
+27         Author: James Henderson
+28         Date: Dec 4, 2018
+29          *****************************************************
+30         */
+31         
+32         libname mylib './data';
+NOTE: Libref MYLIB was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: /afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data
+33         
+34         /* import fixed width data using column format*/
+35         data stations;
+36             infile './data/ghcnd-stations.txt' dsd;
+37             input station $ 1-11 lat 13-20 lon 22-30 elev 32-37 state $ 39-40
+38                  name $ 42-71 gsn $ 73-75 hcn  77-79 wmo  81-85;
+39         
+
+NOTE: The infile './data/ghcnd-stations.txt' is:
+      Filename=/afs/umich.edu/user/j/b/jbhender/Stats506_F18/Examples/SAS/data/ghcnd-stations.txt,
+      Owner Name=jbhender,Group Name=wheel,
+      Access Permission=rw-r--r--,
+      Last Modified=Wed Nov 28 22:15:49 2018,
+      File Size (bytes)=8954836
+
+NOTE: Invalid data for hcn in line 32345 77-79.
+RULE:     ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9----+----0                      
+32345     CAW00064757  44.2325  -79.7811  246.0 ON EGBERT 1 W                         CRN       85
+station=CAW00064757 lat=44.2325 lon=-79.7811 elev=246 state=ON name=EGBERT 1 W gsn=  hcn=. wmo=. _ERROR_=1 _N_=32345
+NOTE: Invalid data for hcn in line 42309 77-79.
+42309     RSW00037201  71.5856  128.9158    9.1 SA TIKSI 4 SSE                        CRN       85
+station=RSW00037201 lat=71.5856 lon=128.9158 elev=9.1 state=SA name=TIKSI 4 SSE gsn=  hcn=. wmo=. _ERROR_=1 _N_=42309
+NOTE: Invalid data for hcn in line 76860 77-79.
+76860     USC00011084  31.0583  -87.0550   25.9 AL BREWTON 3 SSE                      HCN       85
+station=USC00011084 lat=31.0583 lon=-87.055 elev=25.9 state=AL name=BREWTON 3 SSE gsn=  hcn=. wmo=. _ERROR_=1 _N_=76860
+NOTE: Invalid data for hcn in line 76920 77-79.
+76920     USC00012813  30.5467  -87.8808    7.0 AL FAIRHOPE 2 NE                      HCN       85
+station=USC00012813 lat=30.5467 lon=-87.8808 elev=7 state=AL name=FAIRHOPE 2 NE gsn=  hcn=. wmo=. _ERROR_=1 _N_=76920
+NOTE: Invalid data for hcn in line 76935 77-79.
+76935     USC00013160  32.8347  -88.1342   38.1 AL GAINESVILLE LOCK                   HCN       85
+station=USC00013160 lat=32.8347 lon=-88.1342 elev=38.1 state=AL name=GAINESVILLE LOCK gsn=  hcn=. wmo=. _ERROR_=1 _N_=76935
+NOTE: Invalid data for hcn in line 76945 77-79.
+76945     USC00013511  32.7019  -87.5814   67.4 AL GREENSBORO                         HCN       85
+station=USC00013511 lat=32.7019 lon=-87.5814 elev=67.4 state=AL name=GREENSBORO gsn=  hcn=. wmo=. _ERROR_=1 _N_=76945
+NOTE: Invalid data for hcn in line 76965 77-79.
+76965     USC00013816  31.8814  -86.2503  132.0 AL HIGHLAND HOME                      HCN       85
+station=USC00013816 lat=31.8814 lon=-86.2503 elev=132 state=AL name=HIGHLAND HOME gsn=  hcn=. wmo=. _ERROR_=1 _N_=76965
+NOTE: Invalid data for hcn in line 77080 77-79.
+77080     USC00017157  34.1736  -86.8133  243.8 AL SAINT BERNARD                      HCN       85
+station=USC00017157 lat=34.1736 lon=-86.8133 elev=243.8 state=AL name=SAINT BERNARD gsn=  hcn=. wmo=. _ERROR_=1 _N_=77080
+NOTE: Invalid data for hcn in line 77083 77-79.
+77083     USC00017304  34.6736  -86.0536  187.5 AL SCOTTSBORO                         HCN       85
+station=USC00017304 lat=34.6736 lon=-86.0536 elev=187.5 state=AL name=SCOTTSBORO gsn=  hcn=. wmo=. _ERROR_=1 _N_=77083
+NOTE: Invalid data for hcn in line 77088 77-79.
+77088     USC00017366  32.4111  -87.0144   44.8 AL SELMA                              HCN       85
+station=USC00017366 lat=32.4111 lon=-87.0144 elev=44.8 state=AL name=SELMA gsn=  hcn=. wmo=. _ERROR_=1 _N_=77088
+NOTE: Invalid data for hcn in line 77103 77-79.
+77103     USC00018024  33.4164  -86.1350  136.6 AL TALLADEGA                          HCN       85
+3                                                          The SAS System                            09:18 Tuesday, December 4, 2018
+
+station=USC00018024 lat=33.4164 lon=-86.135 elev=136.6 state=AL name=TALLADEGA gsn=  hcn=. wmo=. _ERROR_=1 _N_=77103
+NOTE: Invalid data for hcn in line 77106 77-79.
+RULE:     ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9----+----0                      
+77106     USC00018178  31.9172  -87.7347  118.9 AL THOMASVILLE                        HCN       85
+station=USC00018178 lat=31.9172 lon=-87.7347 elev=118.9 state=AL name=THOMASVILLE gsn=  hcn=. wmo=. _ERROR_=1 _N_=77106
+NOTE: Invalid data for hcn in line 77113 77-79.
+77113     USC00018323  31.8075  -85.9722  165.2 AL TROY                               HCN       85
+station=USC00018323 lat=31.8075 lon=-85.9722 elev=165.2 state=AL name=TROY gsn=  hcn=. wmo=. _ERROR_=1 _N_=77113
+NOTE: Invalid data for hcn in line 77120 77-79.
+77120     USC00018438  32.0142  -85.7464  134.1 AL UNION SPRINGS 9 S                  HCN       85
+station=USC00018438 lat=32.0142 lon=-85.7464 elev=134.1 state=AL name=UNION SPRINGS 9 S gsn=  hcn=. wmo=. _ERROR_=1 _N_=77120
+NOTE: Invalid data for hcn in line 77123 77-79.
+77123     USC00018469  34.5686  -85.6064  341.7 AL VALLEY HEAD                        HCN       85
+station=USC00018469 lat=34.5686 lon=-85.6064 elev=341.7 state=AL name=VALLEY HEAD gsn=  hcn=. wmo=. _ERROR_=1 _N_=77123
+NOTE: Invalid data for hcn in line 77151 77-79.
+77151     USC00020080  32.3697 -112.8600  533.7 AZ AJO                                HCN       85
+station=USC00020080 lat=32.3697 lon=-112.86 elev=533.7 state=AZ name=AJO gsn=  hcn=. wmo=. _ERROR_=1 _N_=77151
+NOTE: Invalid data for hcn in line 77217 77-79.
+77217     USC00021026  33.3761 -112.5828  271.3 AZ BUCKEYE                            HCN       85
+station=USC00021026 lat=33.3761 lon=-112.5828 elev=271.3 state=AZ name=BUCKEYE gsn=  hcn=. wmo=. _ERROR_=1 _N_=77217
+NOTE: Invalid data for hcn in line 77227 77-79.
+77227     USC00021248  36.1533 -109.5394 1709.9 AZ CANYON DE CHELLY                   HCN       85
+station=USC00021248 lat=36.1533 lon=-109.5394 elev=1709.9 state=AZ name=CANYON DE CHELLY gsn=  hcn=. wmo=. _ERROR_=1 _N_=77227
+NOTE: Invalid data for hcn in line 77242 77-79.
+77242     USC00021514  33.2058 -111.6819  434.3 AZ CHANDLER HEIGHTS                   HCN       85
+station=USC00021514 lat=33.2058 lon=-111.6819 elev=434.3 state=AZ name=CHANDLER HEIGHTS gsn=  hcn=. wmo=. _ERROR_=1 _N_=77242
+NOTE: Invalid data for hcn in line 77244 77-79.
+WARNING: Limit set by ERRORS= option reached.  Further errors of this type will not be printed.
+77244     USC00021614  34.3494 -111.6981  807.7 AZ CHILDS                             HCN       85
+station=USC00021614 lat=34.3494 lon=-111.6981 elev=807.7 state=AZ name=CHILDS gsn=  hcn=. wmo=. _ERROR_=1 _N_=77244
+NOTE: 104126 records were read from the infile './data/ghcnd-stations.txt'.
+      The minimum record length was 85.
+      The maximum record length was 85.
+NOTE: The data set WORK.STATIONS has 104126 observations and 9 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.06 seconds
+      cpu time            0.07 seconds
+      
+
+40         data mylib.stations;
+41           set stations;
+42         
+43         run;
+
+NOTE: There were 104126 observations read from the data set WORK.STATIONS.
+NOTE: The data set MYLIB.STATIONS has 104126 observations and 9 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.39 seconds
+      cpu time            0.30 seconds
+      
+
+44         
+45         
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           0.48 seconds
+      cpu time            0.38 seconds
+4                                                          The SAS System                            09:18 Tuesday, December 4, 2018
+
+      
