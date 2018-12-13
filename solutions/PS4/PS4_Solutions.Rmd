@@ -1,0 +1,222 @@
+---
+title: "Problem Set 4, Solutions"
+author: "Stats 506, Fall 2018"
+date: "Due: Monday December 10, 5pm"
+output: 
+ html_document:
+   code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+
+  + Submit the assignment by the due date via canvas.  There is a maximum of 1 late day for this assignment.
+
+  + Use Rmarkdown to create and submit a single html or pdf with your answers to question 1-2 along with supporting evidence in the form of tables and graphs. 
+  
+  + All tables and graphs should be neatly labeled and appear polished. 
+
+  + Question 1 and 2 ask you to use *R*. You should
+  submit your code for each problem as `ps4_q1.R` and `ps4_q2_X.R`.
+
+  + You should submit a single compressed archive (`.zip`) which contains
+  the following files: 
+      - `ps4.pdf` or `ps4.html`
+      - `ps4.Rmd` 
+      - `ps4_q1.R`
+      - `ps4_q2_funcs.R`, `ps4_q2a.R`, `ps4_q2b.R`, `ps4_q2c.R`
+      - `run_ps4_q2b.pbs`, `run_ps4_q2c.pbs`
+      - `ps4_q2b.Rout`, `ps4_q2c-X.Rout` (X = 1, 2, 4). 
+      - `ps4_q3.sas`, `ps4_q3c.csv`, `ps4_q3d.csv`
+  
+     All files should be executable without errors.
+ 
+  + All files read, sourced, or referred to within scripts should be assumed to be in the same working directory (`./`).
+  
+  + Your code should be clearly written and it should be possible to assess it by reading it. Use appropriate variable names and comments. Your style will be graded using the [style rubric](./StyleRubric.html) [15 points].
+
+  + Some of these exercises may require you to use commands or techniques that were not covered in class or in the course notes. You can use the web as needed to identify appropriate approaches. Part of the purpose of these exercises is for you to learn to be resourceful and self sufficient. Questions are welcome at all times, but please make an attempt to locate relevant information yourself first.
+
+
+## Question 1 [20 points]
+
+Use the Lahman baseball data previously seen in the [SQL notes](https://jbhender.github.io/Stats506/F18/Intro_to_SQL.html) to answer this question. Your answer should be a single SQL query, but may require anonymous tables created using nested queries.
+
+Write an SQL query to construct a table showing the _all-time_ leader in _hits_ ("H" from the "batting" table) for each birth country ("birthCountry" in the "master" table).  An _all-time_ leader is the player ("playerID") with the most total hits across all rows (e.g. seasons/stints). Limit your table to players/countries with at least 200 hits and order the table by descending number of hits. Create a nicely formatted table with the following columns as your final output: Player (nameFirst nameLast), Debut (debut), Country of Birth (birthCountry), Hits (H). 
+
+**Solution:**
+Here is the query.  For the full R script, see `ps4_q1.R` at the Stats506_F18 git repo.
+
+```r
+SELECT m.nameFirst First, m.nameLast Last, m.debut Debut, birthCountry, 
+       max(b.Hits) Hits
+FROM ( SELECT playerID, sum(H) as Hits
+       FROM BATTING
+       GROUP BY playerID
+       HAVING Hits > 199
+     ) b
+LEFT JOIN MASTER m
+ ON b.playerID = m.playerID
+GROUP BY birthCountry
+ORDER BY -b.Hits
+```
+
+Below is a formatted table.
+```{r, message = FALSE}
+source('./ps4_q1.R')
+
+country_hits_leaders %>%
+  transmute(
+    Player = paste(First, Last),
+    Debut = format.Date(lubridate::ymd(Debut), '%b %d, %Y'),
+    "Country of Birth" = birthCountry,
+    Hits = format(Hits, big.mark = ',')
+  ) %>%
+  knitr::kable( format = 'html' ) %>%
+  kableExtra::kable_styling(full_width = TRUE, bootstrap_options = 'striped' )
+
+```
+
+
+## Question 2 [40 points]
+
+In this question you will modify your answer to Problem Set 3, Question 2 (PS3 Q2) to practice  parallel, asynchronous, and batch computing.  Copy the functions from part a and c of PS3 Q2 to a new file `ps4_q2_funcs.R`
+
+In each of the parts below, let $\beta \in \mathbb{R}^{100}$ be defined so that
+$$
+\beta_i = \begin{cases} .1, & i \le 10, \\ 0, & \textrm{else.} \end{cases}
+$$
+and $\Sigma$ be block diagonal with $\Sigma_{ij} = \rho\beta_i\beta_j$ when $i \ne j$ and $\Sigma_{ii} = 1$. (You may also use $\beta$ as in PS3 Q2 and rescale in any other way that results in a positive definite $\Sigma$.)
+
+Create a table or plot for your results from each part.
+
+a. Write an R script `ps4_q2a.R` that sources `ps4_q2_funcs.R`, and then uses `mclapply` to run parallel simulations for $\rho \in \{.25i\}_{i=-3}^{3}$.  
+Let $\sigma = 1$ and use 10,000 Monte Carlo replications. Reorganize the results into a long data frame `results_q4a` with columns: "rho", "sigma", "metric", "method", "est", and "se".  "Metric" should contain the assessment measure: FWER, FDR, Sensitivity, or Specificity and "method" the multiple comparison method used. The columns "est" and "se" should contain the Monte Carlo estimate and its standard error, respectively. 
+
+** Solution: ** See source code at the Stats506_F18 repo on github.  
+
+```{r q2a_source, message = FALSE}
+library(tidyverse); library(data.table)
+load('./q2/ps4_q2a.RData')
+```
+
+```{r, fig.cap=cap}
+# Clean labels for plotting
+results[ , method := factor(method, levels = c('holm', 'bonferroni', 'BH', 'BY'),
+    labels = c('Holm (FWER)', 'Bonferroi (FWER)', 'BH (FDR)', 'BY (FDR)') ) ]
+results[ , metric := factor(metric, levels = c('fdr', 'fwer', 'sens', 'spec'),
+                  labels = c('FDR', 'FWER', 'Sensitivity', 'Specificity'))]
+
+cap = '**Figure 1.** Performance measures for variable selection in a linear model from multiple hypothesis testing using four methods for controlling the family-wise error rate (FWER) or false discovery rate (FDR).  Each interval shows the mean and 95% confidence interval computed from 10,000 Monte Carlo draws of the response, but conditional on a single draw of the covariate matrix.  Because of this conditioning, results are comparable within columns but not between columns.  Each column corresponds to a different model matrix in which the true-positive covariates all have pairwise correlation $\rho \times 1e-3$ with $\rho$ given in the column header.'
+
+# Plot the results
+results[, `:=`(lwr = est - 1.96*se, upr = est + 1.96*se)] %>% 
+  ggplot( aes( x = method, y = est ) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) + 
+  facet_grid(metric ~ rho, scales = "free_y") +
+  theme_bw() +
+  theme( axis.text.x = element_text(angle = 90)) +
+  ylab('Estimated Result')
+```
+
+
+
+b. Use your script from part a as the basis for a new script `ps4_q2b.R`. Setup a 4 core cluster using `doParallel` and then use nested foreach loops to run simulations for $\rho \in \{.25i\}_{i=-3}^{3}$ and $\sigma = \{.25, .5, 1\}$. Reshape the results as before into `results_q4b` saved to a file `results_q4b.RData`. Use a PBS file to run this script on the Flux cluster.  
+
+**Solution:**
+
+```{r q2b_prep}
+load('./q2/ps4_q2b.RData')
+
+# Clean labels for plotting
+results[ , method := factor(method, levels = c('holm', 'bonferroni', 'BH', 'BY'),
+    labels = c('Holm (FWER)', 'Bonferroi (FWER)', 'BH (FDR)', 'BY (FDR)') ) ]
+results[ , metric := factor(metric, levels = c('fdr', 'fwer', 'sens', 'spec'),
+                  labels = c('FDR', 'FWER', 'Sensitivity', 'Specificity'))]
+results[, `:=`(lwr = est - 1.96*se, upr = est + 1.96*se)]
+results[ , `:=`(r = paste('r', rho, sep = '='),
+                s = paste('s', sigma, sep = '='))]
+```
+
+```{r q2b_fdr, fig.height=8, fig.cap = cap}
+# Plot the results
+results[metric == 'FDR'] %>% 
+  ggplot( aes( x = method, y = est ) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) + 
+  facet_grid(r ~ s) +
+  theme_bw() +
+  theme( axis.text.x = element_text(angle = 90)) +
+  ylab('Estimated Result')
+cap = '**Figure 2a.** *False discovery rates.*'
+```
+
+
+```{r q2b_fwer, fig.height=8, fig.cap = cap}
+# Plot the results
+results[metric == 'FWER'] %>% 
+  ggplot( aes( x = method, y = est ) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) + 
+  facet_grid(r ~ s) +
+  theme_bw() +
+  theme( axis.text.x = element_text(angle = 90)) +
+  ylab('Estimated Result')
+cap = '**Figure 2b.** *Family wise error rates.*'
+```
+
+
+```{r q2b_sens, fig.height=8, fig.cap = cap}
+# Plot the results
+results[metric == 'Sensitivity'] %>% 
+  ggplot( aes( x = method, y = est ) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) + 
+  facet_grid(r ~ s) +
+  theme_bw() +
+  theme( axis.text.x = element_text(angle = 90)) +
+  ylab('Estimated Result')
+cap = '**Figure 2c.** *Sensitivity.*'
+```
+
+
+```{r q2b_specificity, fig.height=8, fig.cap = cap}
+# Plot the results
+results[metric == 'Specificity'] %>% 
+  ggplot( aes( x = method, y = est ) ) +
+  geom_point() +
+  geom_errorbar( aes(ymin = lwr, ymax = upr)) + 
+  facet_grid(r ~ s) +
+  theme_bw() +
+  theme( axis.text.x = element_text(angle = 90)) +
+  ylab('Estimated Result')
+cap = '**Figure 2d.** *Specificity.*'
+```
+
+c. Modify your script from part a to create `ps4_q2c.R` which reads the following arguments from the command line: `sigma`, `mc_rep`, and `n_cores`.  Also modify the script to use the `futures` package for parallelism.  Use a PBS file to run this script as a job array for $\sigma = \{.25, .5, 1\}$. _Hint: see the answer at this [page](https://stackoverflow.com/questions/12722095/how-do-i-use-floating-point-division-in-bash) for how to convert `$PBS_ARRAYID` to `sigma`.
+
+**Solution:** See script at Stats506_F18 repo. Results should be similar to part b. 
+
+## Question 3 [25 points]
+
+For this question you should use the 2016 Medicare Provider Utilization and Payment data available here [here](https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Medicare-Provider-Charge-Data/Physician-and-Other-Supplier.html).
+
+a. Put the data into a folder `./data` and then follow the instructions to read this data into SAS. 
+
+b. Use one or more data steps to reduce the data set to those rows with "MRI" in
+the 'hcpcs_description' field and where 'hcpcs_code' starts with a 7. 
+
+c. Use proc means or proc summary (as needed) to determine the MRI procedures with the highest volume, highest total payment, and highest average payment among the procedures represented here.
+
+d. Repeat part b-c using PROC SQL. 
+
+e. Export the results from "c" and "d" to csv and verify that they match. You do _not_ need to produce a nice table within your solution document.  
+
+**Solution:** See `ps4_q3_import.sas` for the solution to part a and
+`ps4_q3.sas` for parts b-e.  These can be found at the Stats506_F18 git repo. Also
+available there are the results exported as csv files. 
+
