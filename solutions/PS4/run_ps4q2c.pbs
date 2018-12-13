@@ -1,0 +1,51 @@
+#!/bin/sh
+##This names the job for the queueing system
+#PBS -N ps4qc
+
+##This denotes the queue that the job should be run in.
+#PBS -A stats_flux
+#PBS -l qos=flux
+#PBS -q flux
+
+##This denotes the number of nodes and processors that the job should be run on.
+#PBS -l nodes=1:ppn=7
+
+##For embarrassingly parallel computing, instead select the number of processors
+##PBS -l procs=5
+#PBS -t 1,2,4
+
+##This is the run time (hh:mm:ss) that your job will be allocated.  
+#PBS -l walltime=0:02:00
+
+##Where does your program's STDOUT go? (Replace with a file in your home directory)
+#PBS -o /home/jbhender/Stats506_F18/solutions/PS4/ps4qc.out
+
+##Import the shell's environment
+## This is important if you're using Environment Modules (i.e. module load ...)
+
+#PBS -V
+
+##In what circumstances should an email be sent regarding this job?  'a' is for aborted jobs,
+## 'b' is when the job starts, and 'e' is when the job exits.
+
+#PBS -m abe
+
+##Where should email be sent when the job starts and stops? REPLACE with your uniquename.
+#PBS -M jbhender@umich.edu
+
+#PBS -l pmem=1Gb
+
+#PBS -j oe
+
+##code to be run
+
+## Our scripts source a file from a local directory, so we need to
+## change the working directory appropriately unless we prefer to 
+## modify the source files to use an absolute path.
+
+path=/home/jbhender/Stats506_F18/solutions/PS4/
+cd $path
+
+sigma=$( echo "$PBS_ARRAYID/4" | bc -l )
+Rscript ps4_q2c.R $sigma 1e4 7 >& ps4_q2c.Rout
+
