@@ -22,6 +22,9 @@
 #! store directories you read from or write to as objects here.
 # directories: -----------------------------------------------------------------
 
+#! you should generally read/load data in a single place near the start.
+# data: ------------------------------------------------------------------------
+
 #! Keep this as a reference for code length at 
 #! the top and bottom of your scripts. 
 # 80: --------------------------------------------------------------------------

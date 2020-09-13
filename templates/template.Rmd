@@ -1,5 +1,5 @@
 ---
-title: "Stats 506, F18, Problem Set X"
+title: "Stats 506, F19, Problem Set X"
 author: "Your Name, email@umich.edu"
 date: "`r format.Date(Sys.Date(), '%B %d, %Y')`"
 output: pdf_document
@@ -31,10 +31,14 @@ Use numbered lists for specific parts of each question:
 
 Please start each question on a new page.
 
-```{r pressure, echo=FALSE, fig.height=4, fig.cap = cap}
+```{r pressure, echo=FALSE, fig.height=4, fig.cap=cap}
 # 80: --------------------------------------------------------------------------
-#! Captions are an execption to the 80 character limit.
-cap = "*Title.* All of figures and tables should be numbered, titled and have a descriptive caption."
+#! Use `paste` to construct captions while respecting the 80 char limit.
+cap = paste0(
+ "**Figure 1.** *Title.* All figures and tables should be numbered, titled ",
+ "and have a descriptive caption."
+)
+
 plot(pressure)
 ```
 

@@ -1,7 +1,7 @@
 ## Examples comparing the "plan" strategies for concurrent
 ## execution using the future package.
 ##
-## Updated: Nov 20, 2018
+## Updated: Nov 21, 2019
 
 # libraries: ------------------------------------------------------------------
 library(future)
@@ -32,11 +32,12 @@ for( i in 1:12 ){
 
 # Note the different default relative to mclapply
 unique( unlist( lapply(results1, value) ) )
+unique( unlist( parallel::mclapply(1:12, f)))
 availableCores()
 
 matrix( unlist( lapply(results1, value) ), 4, 3)
 
-# Parallel computations using `plan(multisession)` with differnt wait pattern
+# Parallel computations using `plan(multisession)` with different wait pattern
 results2 = list()
 for( i in 1:12 ){
   results2[[i]] = future({f_wait(1/i)})
