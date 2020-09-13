@@ -41,7 +41,7 @@ Y_test = X_test %*% matrix(beta) + s*rnorm(n)
 #
 # It actually selects a sequence of lambda's for the fit, how is outside our
 # scope.  
-fit1 = glmnet(X_train, Y_train, alpha = 1)
+fit1 = glmnet(X_train, Y_train, alpha = 0)
 
 # Here's how well each set of beta's does at fitting the test data: -----------
 # Generally we don't get to do this as we need to choose lambda before evaluating
@@ -75,7 +75,7 @@ rmse = function(y, yhat) {
 leave_out_rmse = list()
 for ( fold in unique(folds) ) {
     fit = glmnet(X_train[folds!=fold, ], Y_train[folds!=fold, ], 
-                 alpha = 1, lambda = lambda)    
+                 alpha = 0, lambda = lambda)    
     leave_out_rmse[[fold+1]] = 
      sqrt( colMeans( {Y_train[fold==fold, ] - coef(fit)[1] - 
            X_train[fold==fold, ] %*% coef(fit)[2:{1+ncol(X_train)},] }^2 ) )
@@ -100,7 +100,7 @@ rmse(Y_test, beta_ols[1] + X_train %*% beta_ols[-1])
 ## Exercise(s): ---------------------------------------------------------------
 # 1. Modify this script for the lasso in the following ways:
 #    a. Set all but a subset of "beta" to zero
-#    b. Use alpha = 0 in glmnet
+#    b. Use alpha = 1 in glmnet
 #
 # 2. Modify the script to use the elastic net by cross-validating over a grid
 #    of alpha and lambdas.
